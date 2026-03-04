@@ -8,6 +8,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -79,21 +80,6 @@
             border-radius: 50%;
             margin-left: 8px;
             position: relative;
-        }
-
-        .chase-logo::after {
-            content: '⬡';
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 32px;
-            height: 32px;
-            background: white;
-            border-radius: 50%;
-            margin-left: 8px;
-            color: var(--chase-blue);
-            font-size: 18px;
-            line-height: 1;
         }
 
         .login-form-container {
@@ -193,6 +179,20 @@
             font-size: 14px;
             margin: 12px 0;
             font-weight: 500;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-gray);
+        }
+
+        .social-links a {
+            color: var(--text-gray);
+            font-size: 20px;
         }
 
         .footer-links {
@@ -380,6 +380,12 @@
             font-size: 12px;
             font-weight: 600;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .offer-card:active {
+            transform: scale(0.95);
         }
 
         .offer-card.office-depot {
@@ -390,32 +396,6 @@
         .offer-card.dell {
             background: #007db8;
             color: white;
-        }
-
-        /* Investment Section */
-        .investment-section {
-            padding: 20px;
-            background: white;
-            border-radius: 16px;
-            margin: 20px;
-        }
-
-        .investment-option {
-            margin-bottom: 20px;
-            padding: 15px;
-            border: 1px solid var(--border-gray);
-            border-radius: 8px;
-        }
-
-        .investment-title {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-
-        .investment-desc {
-            font-size: 14px;
-            color: var(--text-gray);
         }
 
         /* Bottom Navigation */
@@ -600,7 +580,6 @@
             color: var(--chase-blue);
             font-weight: 600;
             font-size: 18px;
-            margin: 15px 0;
         }
 
         /* Transactions */
@@ -812,54 +791,43 @@
             color: #856404;
         }
 
-        /* Keyboard */
-        .keyboard {
-            position: fixed;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 414px;
-            background: #d1d5db;
-            padding: 8px;
-            z-index: 2500;
-            display: none;
-        }
-
-        .keyboard.active {
-            display: block;
-        }
-
-        .keyboard-row {
-            display: flex;
-            justify-content: center;
-            gap: 6px;
-            margin-bottom: 8px;
-        }
-
-        .key {
-            flex: 1;
-            max-width: 32px;
-            height: 42px;
+        /* Investment Cards */
+        .investment-card {
             background: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 18px;
-            font-weight: 500;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
             cursor: pointer;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
         }
 
-        .key.wide {
-            max-width: 46px;
+        .investment-card:active {
+            transform: scale(0.98);
         }
 
-        .key.space {
-            max-width: 180px;
+        .investment-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--chase-light);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--chase-blue);
+            font-size: 20px;
         }
 
-        .key:active {
-            background: #e5e7eb;
+        .investment-info h4 {
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+
+        .investment-info p {
+            font-size: 13px;
+            color: var(--text-gray);
         }
     </style>
 </head>
@@ -876,8 +844,10 @@
                     <input type="email" class="input-field" id="loginEmail" placeholder="User ID" value="kruegerchelsea1044@mail.com">
                 </div>
                 <div class="input-group password-container">
-                    <input type="password" class="input-field" id="loginPassword" placeholder="Password" value="••••••••••••">
-                    <span class="eye-icon" onclick="togglePassword()" style="font-size: 14px;">Show</span>
+                    <input type="password" class="input-field" id="loginPassword" placeholder="Password" value="password123">
+                    <span class="eye-icon" onclick="togglePassword()">
+                        <i class="far fa-eye"></i>
+                    </span>
                 </div>
                 
                 <div class="checkbox-row">
@@ -900,6 +870,14 @@
                     <a href="#">Not enrolled? Sign up Now</a>
                 </div>
                 
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-x-twitter"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+                
                 <div class="footer-links">
                     <a href="#">Contact us</a>
                     <a href="#">Privacy & security</a>
@@ -916,21 +894,25 @@
                     <div class="chase-logo" style="font-size: 24px;">CHASE</div>
                     <div class="header-greeting">Hi, <span id="userName">Emmanuel Jobs</span></div>
                     <div class="header-icons">
-                        <span class="header-icon" onclick="showToast('Notifications coming soon')">🔔</span>
+                        <span class="header-icon" onclick="showToast('Notifications coming soon')"><i class="far fa-bell"></i></span>
                         <span class="header-icon" style="background: rgba(255,255,255,0.2); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;">E</span>
                     </div>
                 </div>
                 <div class="quick-actions">
                     <button class="quick-action-btn" onclick="showToast('Apple Pay setup coming soon')">
+                        <i class="fab fa-apple"></i>
                         <span>Set Up Apple Pay</span>
                     </button>
                     <button class="quick-action-btn" onclick="showErrorModal('Mobile check deposit is temporarily unavailable for your account. Please visit a Chase branch or ATM to deposit your check.')">
+                        <i class="fas fa-camera"></i>
                         <span>Deposit Checks</span>
                     </button>
                     <button class="quick-action-btn" onclick="openTransferModal()">
+                        <i class="fas fa-exchange-alt"></i>
                         <span>Account Transfer</span>
                     </button>
                     <button class="quick-action-btn" onclick="showToast('Bill pay coming soon')">
+                        <i class="far fa-file-alt"></i>
                         <span>Pay a bill</span>
                     </button>
                 </div>
@@ -956,9 +938,9 @@
                                 </div>
                                 <div class="account-balance" id="savingsBalance">$467,778.00</div>
                             </div>
-                            <div class="open-account-btn" onclick="switchTab('cards')">
+                            <div class="open-account-btn" onclick="showToast('Account opening coming soon')">
                                 <span>+</span>
-                                <span>Open a Credit Card</span>
+                                <span>Open an Account</span>
                             </div>
                         </div>
                     </div>
@@ -972,34 +954,60 @@
                             <a href="#" class="section-link">All offers ></a>
                         </div>
                         <div class="offers-scroll">
-                            <div class="offer-card">Cards</div>
-                            <div class="offer-card office-depot">OFFICE DEPOT</div>
-                            <div class="offer-card" style="background: #1a1a1a; color: white;">BEATS</div>
-                            <div class="offer-card dell">DELL</div>
+                            <div class="offer-card" onclick="showToast('Cards offers coming soon')">Cards</div>
+                            <div class="offer-card office-depot" onclick="showToast('Office Depot offer: 5% cash back')">OFFICE DEPOT</div>
+                            <div class="offer-card" style="background: #1a1a1a; color: white;" onclick="showToast('Beats offer: 10% cash back')">BEATS</div>
+                            <div class="offer-card dell" onclick="showToast('Dell offer: 3% cash back')">DELL</div>
                         </div>
                     </div>
 
                     <div style="padding: 0 20px 20px;">
-                        <h3 class="section-title" style="margin-bottom: 10px;">Invest with J.P. Morgan</h3>
-                        <p style="font-size: 13px; color: var(--text-gray);">Work with an advisor, invest online and access market insights ></p>
-                        <div class="investment-section">
-                            <div class="investment-option">
-                                <div class="investment-title">Wealth Management</div>
-                                <div class="investment-desc">Personalized investment strategies with dedicated advisors for high-net-worth individuals.</div>
+                        <h3 class="section-title" style="margin-bottom: 15px;">Invest with J.P. Morgan</h3>
+                        
+                        <!-- Investment Cards -->
+                        <div class="investment-card" onclick="showToast('S&P 500 Index Fund - 12.5% YTD return')">
+                            <div class="investment-icon">
+                                <i class="fas fa-chart-line"></i>
                             </div>
-                            <div class="investment-option">
-                                <div class="investment-title">Self-Directed Investing</div>
-                                <div class="investment-desc">Trade stocks, ETFs, and mutual funds with no commissions through our online platform.</div>
-                            </div>
-                            <div class="investment-option">
-                                <div class="investment-title">Retirement Planning</div>
-                                <div class="investment-desc">IRAs, 401(k) rollovers, and annuity options to secure your future.</div>
-                            </div>
-                            <div class="investment-option">
-                                <div class="investment-title">Sustainable Investing</div>
-                                <div class="investment-desc">ESG-focused portfolios that align with your values while pursuing returns.</div>
+                            <div class="investment-info">
+                                <h4>JPMorgan Large Cap Growth Fund</h4>
+                                <p>Class A • 12.5% YTD return • Min $1,000</p>
                             </div>
                         </div>
+                        
+                        <div class="investment-card" onclick="showToast('JPMorgan Equity Income Fund - 3.2% dividend yield')">
+                            <div class="investment-icon">
+                                <i class="fas fa-coins"></i>
+                            </div>
+                            <div class="investment-info">
+                                <h4>JPMorgan Equity Income Fund</h4>
+                                <p>Dividend yield 3.2% • Min $2,500</p>
+                            </div>
+                        </div>
+                        
+                        <div class="investment-card" onclick="showToast('JPMorgan Ultra-Short Municipal Fund - Tax-free income')">
+                            <div class="investment-icon">
+                                <i class="fas fa-city"></i>
+                            </div>
+                            <div class="investment-info">
+                                <h4>JPMorgan Municipal Bond Fund</h4>
+                                <p>Tax-free income • Min $5,000</p>
+                            </div>
+                        </div>
+                        
+                        <div class="investment-card" onclick="showToast('JPMorgan SmartRetirement® 2050 Fund - Target date fund')">
+                            <div class="investment-icon">
+                                <i class="fas fa-umbrella"></i>
+                            </div>
+                            <div class="investment-info">
+                                <h4>JPMorgan SmartRetirement® 2050</h4>
+                                <p>Target retirement • Min $1,000</p>
+                            </div>
+                        </div>
+                        
+                        <p style="font-size: 13px; color: var(--chase-blue); margin-top: 10px; cursor: pointer;" onclick="showToast('Explore all investment options')">
+                            <i class="fas fa-arrow-right"></i> Work with an advisor, invest online and access market insights
+                        </p>
                     </div>
                 </div>
 
@@ -1030,7 +1038,7 @@
                         
                         <div id="noCardsState">
                             <div class="no-cards">
-                                <div class="no-cards-icon">Card</div>
+                                <div class="no-cards-icon"><i class="fas fa-credit-card"></i></div>
                                 <h3>No cards yet</h3>
                                 <p>Apply for a Chase credit card to get started.</p>
                                 <button class="btn-secondary" onclick="openCardApplication()">Apply Now</button>
@@ -1058,16 +1066,20 @@
 
             <!-- Bottom Navigation -->
             <div class="bottom-nav">
-                <div class="nav-item active" onclick="switchTab('accounts')">
+                <div class="nav-item active" onclick="switchTab('accounts', event)">
+                    <i class="fas fa-home"></i>
                     <span>Accounts</span>
                 </div>
-                <div class="nav-item" onclick="switchTab('pay')">
+                <div class="nav-item" onclick="switchTab('pay', event)">
+                    <i class="fas fa-exchange-alt"></i>
                     <span>Pay & Collect</span>
                 </div>
-                <div class="nav-item" onclick="switchTab('transactions')">
+                <div class="nav-item" onclick="switchTab('transactions', event)">
+                    <i class="fas fa-list"></i>
                     <span>Transactions</span>
                 </div>
-                <div class="nav-item" onclick="switchTab('cards')">
+                <div class="nav-item" onclick="switchTab('cards', event)">
+                    <i class="fas fa-credit-card"></i>
                     <span>Cards</span>
                 </div>
             </div>
@@ -1093,19 +1105,19 @@
                     
                     <div class="form-group">
                         <label class="form-label">To Account Number</label>
-                        <input type="text" class="form-input" id="toAccount" placeholder="Enter recipient account number" inputmode="none" onfocus="showKeyboard()">
+                        <input type="text" class="form-input" id="toAccount" placeholder="Enter recipient account number">
                     </div>
                     
                     <div class="form-group">
                         <label class="form-label">Amount</label>
                         <div class="amount-input">
-                            <input type="number" class="form-input" id="transferAmount" placeholder="0.00" inputmode="none" onfocus="showKeyboard()">
+                            <input type="number" class="form-input" id="transferAmount" placeholder="0.00">
                         </div>
                     </div>
                     
                     <div class="form-group">
                         <label class="form-label">Description (Optional)</label>
-                        <input type="text" class="form-input" id="transferDesc" placeholder="What's this transfer for?" inputmode="none" onfocus="showKeyboard()">
+                        <input type="text" class="form-input" id="transferDesc" placeholder="What's this transfer for?">
                     </div>
                     
                     <button class="btn-primary" id="transferBtn" onclick="processTransfer()">
@@ -1121,7 +1133,7 @@
                 <div class="error-modal">
                     <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
                         <div style="background: var(--chase-blue); color: white; padding: 15px; border-radius: 12px; display: flex; align-items: center; gap: 10px;">
-                            <span style="font-size: 24px;">🛡️</span>
+                            <i class="fas fa-shield-alt" style="font-size: 24px;"></i>
                             <span style="font-weight: 600;">CHASE</span>
                         </div>
                         <button class="close-btn" onclick="closeModal('errorModal')" style="position: absolute; right: 20px; top: 20px;">×</button>
@@ -1187,14 +1199,14 @@
                     
                     <div class="form-group">
                         <label class="form-label">Social Security Number (SSN)</label>
-                        <input type="password" class="form-input" id="ssnInput" placeholder="•••••••••" maxlength="9" inputmode="none" onfocus="showKeyboard()">
+                        <input type="password" class="form-input" id="ssnInput" placeholder="•••••••••" maxlength="9">
                         <p style="font-size: 12px; color: var(--text-gray); margin-top: 5px;">Your SSN is encrypted and secure</p>
                     </div>
                     
                     <div class="form-group">
                         <label class="form-label">Annual Income</label>
                         <div class="amount-input">
-                            <input type="number" class="form-input" id="incomeInput" placeholder="75,000" value="223333" inputmode="none" onfocus="showKeyboard()">
+                            <input type="number" class="form-input" id="incomeInput" placeholder="75,000" value="223333">
                         </div>
                     </div>
                     
@@ -1221,7 +1233,7 @@
                 <!-- Step 3: Review -->
                 <div id="cardStep3" class="hidden" style="padding: 20px;">
                     <div style="text-align: center; margin-bottom: 30px;">
-                        <div style="width: 60px; height: 60px; background: var(--success); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; color: white; font-size: 30px;">✓</div>
+                        <div style="width: 60px; height: 60px; background: var(--success); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; color: white; font-size: 30px;"><i class="fas fa-check"></i></div>
                         <h3>Review & Submit</h3>
                         <p style="color: var(--text-gray); font-size: 14px;">Please review your application details</p>
                     </div>
@@ -1264,39 +1276,8 @@
 
         <!-- Toast -->
         <div class="toast" id="toast">
-            <span>✓</span>
+            <i class="fas fa-check-circle"></i>
             <span id="toastMessage">Welcome back!</span>
-        </div>
-
-        <!-- Custom Keyboard -->
-        <div class="keyboard" id="customKeyboard">
-            <div class="keyboard-row">
-                <button class="key" onclick="pressKey('1')">1</button>
-                <button class="key" onclick="pressKey('2')">2</button>
-                <button class="key" onclick="pressKey('3')">3</button>
-                <button class="key" onclick="pressKey('4')">4</button>
-                <button class="key" onclick="pressKey('5')">5</button>
-                <button class="key" onclick="pressKey('6')">6</button>
-                <button class="key" onclick="pressKey('7')">7</button>
-                <button class="key" onclick="pressKey('8')">8</button>
-                <button class="key" onclick="pressKey('9')">9</button>
-                <button class="key" onclick="pressKey('0')">0</button>
-            </div>
-            <div class="keyboard-row">
-                <button class="key wide" onclick="pressKey('@')">@</button>
-                <button class="key" onclick="pressKey('#')">#</button>
-                <button class="key" onclick="pressKey('$')">$</button>
-                <button class="key" onclick="pressKey('%')">%</button>
-                <button class="key" onclick="pressKey('&')">&</button>
-                <button class="key" onclick="pressKey('*')">*</button>
-                <button class="key" onclick="pressKey('(')">(</button>
-                <button class="key" onclick="pressKey(')')">)</button>
-            </div>
-            <div class="keyboard-row">
-                <button class="key" style="background: #acb4bf;" onclick="hideKeyboard()">↓</button>
-                <button class="key space" onclick="pressKey(' ')">space</button>
-                <button class="key" style="background: #acb4bf;" onclick="backspaceKey()">⌫</button>
-            </div>
         </div>
     </div>
 
@@ -1311,11 +1292,6 @@
             appId: "YOUR_APP_ID"
         };
 
-        // Initialize Firebase (commented out until config is provided)
-        // firebase.initializeApp(firebaseConfig);
-        // const auth = firebase.auth();
-        // const db = firebase.firestore();
-
         // App State
         let currentUser = {
             name: 'Emmanuel Jobs',
@@ -1326,38 +1302,37 @@
         };
 
         let selectedCard = 'reserve';
-        let activeInput = null;
         let cardApplications = [];
 
         // Sample Transactions Data
         const transactions = [
-            { name: 'Payment from Wal...', date: 'Jan 3, 2026 • 11:23 AM', amount: 191.63, type: 'credit', balance: 580956.00 },
+            { name: 'Payment from Walmart', date: 'Jan 3, 2026 • 11:23 AM', amount: 191.63, type: 'credit', balance: 580956.00 },
             { name: 'Purchase at Apple', date: 'Jan 3, 2026 • 11:23 AM', amount: -205.13, type: 'debit', balance: 580942.50 },
-            { name: 'Payment from Wal...', date: 'Jan 3, 2026 • 11:23 AM', amount: 144.38, type: 'credit', balance: 581147.63 },
-            { name: 'Purchase at Post...', date: 'Jan 3, 2026 • 11:23 AM', amount: -144.38, type: 'debit', balance: 581003.25 },
-            { name: 'Payment from Goo...', date: 'Jan 3, 2026 • 11:23 AM', amount: 108.85, type: 'credit', balance: 581112.10 },
+            { name: 'Payment from Walmart', date: 'Jan 3, 2026 • 11:23 AM', amount: 144.38, type: 'credit', balance: 581147.63 },
+            { name: 'Purchase at Post Office', date: 'Jan 3, 2026 • 11:23 AM', amount: -144.38, type: 'debit', balance: 581003.25 },
+            { name: 'Payment from Google', date: 'Jan 3, 2026 • 11:23 AM', amount: 108.85, type: 'credit', balance: 581112.10 },
             { name: 'Purchase at Uber', date: 'Jan 3, 2026 • 11:23 AM', amount: -12.57, type: 'debit', balance: 581099.53 },
             { name: 'Purchase at ATM', date: 'Jan 3, 2026 • 11:23 AM', amount: -140.73, type: 'debit', balance: 580958.80 },
-            { name: 'Payment from Pos...', date: 'Jan 3, 2026 • 11:23 AM', amount: 16.31, type: 'credit', balance: 580975.11 },
+            { name: 'Payment from Post Office', date: 'Jan 3, 2026 • 11:23 AM', amount: 16.31, type: 'credit', balance: 580975.11 },
             { name: 'Purchase at Target', date: 'Jan 3, 2026 • 11:23 AM', amount: -104.07, type: 'debit', balance: 580871.04 },
             { name: 'Purchase at Uber', date: 'Jan 3, 2026 • 11:23 AM', amount: -119.66, type: 'debit', balance: 580751.38 },
-            { name: 'Purchase at Starb...', date: 'Jan 3, 2026 • 11:23 AM', amount: -51.33, type: 'debit', balance: 580700.05 },
+            { name: 'Purchase at Starbucks', date: 'Jan 3, 2026 • 11:23 AM', amount: -51.33, type: 'debit', balance: 580700.05 },
             { name: 'Purchase at Netflix', date: 'Jan 3, 2026 • 11:23 AM', amount: -204.47, type: 'debit', balance: 580495.58 },
-            { name: 'Payment from Tar...', date: 'Jan 3, 2026 • 11:23 AM', amount: 16.07, type: 'credit', balance: 580511.65 },
+            { name: 'Payment from Target', date: 'Jan 3, 2026 • 11:23 AM', amount: 16.07, type: 'credit', balance: 580511.65 },
             { name: 'Purchase at eBay', date: 'Jan 3, 2026 • 11:23 AM', amount: -209.33, type: 'debit', balance: 580302.32 },
-            { name: 'Payment from AT...', date: 'Jan 3, 2026 • 11:23 AM', amount: 104.88, type: 'credit', balance: 580407.20 },
-            { name: 'Purchase at Post...', date: 'Jan 3, 2026 • 11:23 AM', amount: -197.38, type: 'debit', balance: 580209.82 },
-            { name: 'Payment from Cha...', date: 'Jan 3, 2026 • 11:23 AM', amount: 190.49, type: 'credit', balance: 580400.31 },
+            { name: 'Payment from AT&T', date: 'Jan 3, 2026 • 11:23 AM', amount: 104.88, type: 'credit', balance: 580407.20 },
+            { name: 'Purchase at Post Office', date: 'Jan 3, 2026 • 11:23 AM', amount: -197.38, type: 'debit', balance: 580209.82 },
+            { name: 'Payment from Chase', date: 'Jan 3, 2026 • 11:23 AM', amount: 190.49, type: 'credit', balance: 580400.31 },
             { name: 'Purchase at ATM', date: 'Jan 3, 2026 • 11:23 AM', amount: -120.26, type: 'debit', balance: 580280.05 },
-            { name: 'Purchase at Starb...', date: 'Jan 3, 2026 • 11:23 AM', amount: -148.82, type: 'debit', balance: 580131.23 },
-            { name: 'Purchase at Direc...', date: 'Jan 3, 2026 • 11:23 AM', amount: -53.70, type: 'debit', balance: 580077.53 },
-            { name: 'Payment from Cha...', date: 'Jan 3, 2026 • 11:23 AM', amount: 37.93, type: 'credit', balance: 580115.46 },
+            { name: 'Purchase at Starbucks', date: 'Jan 3, 2026 • 11:23 AM', amount: -148.82, type: 'debit', balance: 580131.23 },
+            { name: 'Purchase at DirectTV', date: 'Jan 3, 2026 • 11:23 AM', amount: -53.70, type: 'debit', balance: 580077.53 },
+            { name: 'Payment from Chase', date: 'Jan 3, 2026 • 11:23 AM', amount: 37.93, type: 'credit', balance: 580115.46 },
             { name: 'Purchase at Netflix', date: 'Jan 3, 2026 • 11:23 AM', amount: -95.46, type: 'debit', balance: 580020.00 },
-            { name: 'Payment from Sta...', date: 'Jan 3, 2026 • 11:23 AM', amount: 121.43, type: 'credit', balance: 580141.43 },
+            { name: 'Payment from Starbucks', date: 'Jan 3, 2026 • 11:23 AM', amount: 121.43, type: 'credit', balance: 580141.43 },
             { name: 'Purchase at eBay', date: 'Jan 3, 2026 • 11:23 AM', amount: -206.54, type: 'debit', balance: 579934.89 },
-            { name: 'Payment from Cha...', date: 'Jan 3, 2026 • 11:23 AM', amount: 74.63, type: 'credit', balance: 580009.52 },
-            { name: 'Purchase at Amaz...', date: 'Jan 3, 2026 • 11:23 AM', amount: -44.25, type: 'debit', balance: 579965.27 },
-            { name: 'Payment from Wal...', date: 'Jan 3, 2026 • 11:23 AM', amount: 202.25, type: 'credit', balance: 580167.52 },
+            { name: 'Payment from Chase', date: 'Jan 3, 2026 • 11:23 AM', amount: 74.63, type: 'credit', balance: 580009.52 },
+            { name: 'Purchase at Amazon', date: 'Jan 3, 2026 • 11:23 AM', amount: -44.25, type: 'debit', balance: 579965.27 },
+            { name: 'Payment from Walmart', date: 'Jan 3, 2026 • 11:23 AM', amount: 202.25, type: 'credit', balance: 580167.52 },
             { name: 'Purchase at eBay', date: 'Jan 3, 2026 • 11:23 AM', amount: -76.24, type: 'debit', balance: 580091.28 },
             { name: 'Payment from eBay', date: 'Jan 3, 2026 • 11:23 AM', amount: 155.98, type: 'credit', balance: 580247.26 },
             { name: 'Purchase at Chase', date: 'Jan 3, 2026 • 11:23 AM', amount: -194.46, type: 'debit', balance: 580052.80 },
@@ -1386,7 +1361,17 @@
 
         function togglePassword() {
             const input = document.getElementById('loginPassword');
-            input.type = input.type === 'password' ? 'text' : 'password';
+            const icon = document.querySelector('.eye-icon i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
         }
 
         function showRestrictionError() {
@@ -1399,7 +1384,7 @@
         }
 
         // Navigation
-        function switchTab(tab) {
+        function switchTab(tab, event) {
             // Update nav items
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
             event.currentTarget.classList.add('active');
@@ -1418,12 +1403,12 @@
                 case 'transactions':
                     viewTransactions('checking');
                     break;
+                case 'cards':
+                    document.getElementById('cardsView').classList.remove('hidden');
+                    break;
                 case 'pay':
                     document.getElementById('payView').classList.remove('hidden');
                     openTransferModal();
-                    break;
-                case 'cards':
-                    document.getElementById('cardsView').classList.remove('hidden');
                     break;
             }
         }
@@ -1435,7 +1420,6 @@
 
         function closeModal(modalId) {
             document.getElementById(modalId).classList.remove('active');
-            hideKeyboard();
         }
 
         function updateAvailableBalance() {
@@ -1604,32 +1588,9 @@
             `;
             
             // Switch to cards tab
-            switchTab('cards');
-        }
-
-        // Keyboard
-        function showKeyboard() {
-            activeInput = document.activeElement;
-            document.getElementById('customKeyboard').classList.add('active');
-        }
-
-        function hideKeyboard() {
-            document.getElementById('customKeyboard').classList.remove('active');
-            activeInput = null;
-        }
-
-        function pressKey(key) {
-            if (activeInput) {
-                activeInput.value += key;
-                activeInput.dispatchEvent(new Event('input'));
-            }
-        }
-
-        function backspaceKey() {
-            if (activeInput && activeInput.value.length > 0) {
-                activeInput.value = activeInput.value.slice(0, -1);
-                activeInput.dispatchEvent(new Event('input'));
-            }
+            document.getElementById('accountsView').classList.add('hidden');
+            document.getElementById('cardsView').classList.remove('hidden');
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
         }
 
         // Toast
@@ -1672,51 +1633,6 @@
         // Save session on login
         function saveSession() {
             localStorage.setItem('chaseSession', JSON.stringify(currentUser));
-        }
-
-        // Firebase integration helpers (for when you add your config)
-        async function signInWithFirebase(email, password) {
-            try {
-                const userCredential = await auth.signInWithEmailAndPassword(email, password);
-                const user = userCredential.user;
-                
-                // Fetch user data from Firestore
-                const userDoc = await db.collection('users').doc(user.uid).get();
-                if (userDoc.exists) {
-                    currentUser = { ...currentUser, ...userDoc.data() };
-                    updateUI();
-                }
-                
-                return user;
-            } catch (error) {
-                showToast(error.message);
-                throw error;
-            }
-        }
-
-        async function saveTransferToFirebase(transferData) {
-            try {
-                await db.collection('transfers').add({
-                    ...transferData,
-                    userId: auth.currentUser.uid,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                });
-            } catch (error) {
-                console.error('Error saving transfer:', error);
-            }
-        }
-
-        async function saveCardApplicationToFirebase(applicationData) {
-            try {
-                await db.collection('cardApplications').add({
-                    ...applicationData,
-                    userId: auth.currentUser.uid,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                    status: 'pending'
-                });
-            } catch (error) {
-                console.error('Error saving application:', error);
-            }
         }
 
         function updateUI() {
